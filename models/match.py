@@ -6,27 +6,24 @@ from enum import Enum
 from typing import Optional
 from dataclasses import dataclass
 
-from team import Team
-
 
 @dataclass
 class Match:
-    """A premier league match between two teams in a particular season.
+    """A Premier League match between two teams in a particular season.
 
     Instance Attributes:
-        - teams: a set of the the two teams that played this match
-        - date_time: the date and time of the match played
-        - winner: the winner of the match, or None if the match ended in a draw
-        - details: a dictionary mapping each teams to its corresponding match details
+        - teams: A set of the the two teams names that played this match.
+        - date_time: The date and time of the match played.
+        - winner: The name of the winning team of the match, or None if the match ended in a draw.
+        - details: A dictionary mapping each team name to the corresponding match details of that team.
 
     Representation Invariants:
         - len(teams) == 2
     """
-    teams: set[Team]
+    teams: set[str]
     date_time: datetime
-    details: dict[Team, MatchDetails]
-    winner: Optional[Team]
-
+    details: dict[str, MatchDetails]
+    winner: Optional[str]
 
 
 @dataclass
@@ -39,7 +36,7 @@ class MatchDetails:
         - yellow_cards: number of yellow cards given to the team in the match
         - offsides: number of offsides awarded to the team in the match 
         - half_time_goals: number of goals scored by the team at half time
-        - _timfulle_goals: number of goals scored by the team at full time
+        - full_time_goals: number of goals scored by the team at full time
 
     Representation Invariants:
         ...
@@ -50,4 +47,3 @@ class MatchDetails:
     offsides: int
     half_time_goals: int
     full_time_goals: int
-    
