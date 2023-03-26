@@ -6,7 +6,7 @@ from match import Match
 
 @dataclass
 class Team:
-    """A football team in the Premier League in a particular season.
+    """A football team playing in a particular season of the Premier League.
 
     Instance Attributes:
         - name: the name of this team
