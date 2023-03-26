@@ -15,7 +15,7 @@ class Match:
         - teams: A set of the the two teams names that played this match.
         - date_time: The date and time of the match played.
         - winner: The name of the winning team of the match, or None if the match ended in a draw.
-        - details: A dictionary mapping each team name to the corresponding match details of that team.
+        - details: A mapping from each team name to its corresponding match details.
 
     Representation Invariants:
         - len(teams) == 2
