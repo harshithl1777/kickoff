@@ -19,3 +19,4 @@ class Team:
     """
     name: str
     matches: list[Match]
+    

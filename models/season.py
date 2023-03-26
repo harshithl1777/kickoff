@@ -23,3 +23,4 @@ class Season:
     """
     teams: dict[str, Team]
     matches: list[Match]
+    

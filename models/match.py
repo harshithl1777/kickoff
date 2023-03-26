@@ -47,3 +47,4 @@ class MatchDetails:
     offsides: int
     half_time_goals: int
     full_time_goals: int
+    
