@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from team import Team
 
 
+@dataclass
 class Match:
     """A premier league match between two teams in a particular season.
 
@@ -25,9 +26,10 @@ class Match:
     """
     teams: set[Team]
     date_time: datetime
-    winner: Optional[Team]
     goals: list[tuple[int, Team]]
     details: dict[Team, MatchDetails]
+    winner: Optional[Team]
+
 
 
 @dataclass
