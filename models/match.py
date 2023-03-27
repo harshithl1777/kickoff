@@ -26,7 +26,7 @@ class Match:
     home_team: Team
     date_time: datetime
     details: dict[str, MatchDetails]
-    winner: Optional[str]
+    result: MatchResult
 
 
 @dataclass
@@ -50,3 +50,6 @@ class MatchDetails:
     offsides: int
     half_time_goals: int
     full_time_goals: int
+
+
+MatchResult = Enum("MatchResult", ["HOME_WIN", "AWAY_TEAM", "DRAW"])
