@@ -14,6 +14,7 @@ class Team:
     Instance Attributes:
         - name: The name of this team.
         - matches: A chronologically ordered list of the matches played by this team in the season.
+        - seasons: The seasons this team has participated in.
 
     Representation Invariants:
         ...
