@@ -1,0 +1,22 @@
+# Pandas configuration
+USE_COLUMNS = [
+    "Date",
+    "HomeTeam",
+    "AwayTeam",
+    "FTHG",
+    "FTAG",
+    "FTR",
+    "HTHG",
+    "HTAG",
+    "HTR",
+    "HS",
+    "AS",
+    "HST",
+    "AST",
+    "HF",
+    "AF",
+    "HY",
+    "AY",
+    "HR",
+    "AR",
+]
