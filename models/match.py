@@ -6,7 +6,7 @@ from enum import Enum
 from typing import Optional
 from dataclasses import dataclass
 
-from team import Team
+import team
 
 
 @dataclass
@@ -22,8 +22,8 @@ class Match:
     Representation Invariants:
         - len(teams) == 2   
     """
-    away_team: Team
-    home_team: Team
+    away_team: team.Team
+    home_team: team.Team
     date_time: datetime
     details: dict[str, MatchDetails]
     result: MatchResult
@@ -44,7 +44,7 @@ class MatchDetails:
     Representation Invariants:
         ...
     """
-    team: Team
+    team: team.Team
     fouls_commited: int
     red_cards: int
     yellow_cards: int
