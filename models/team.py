@@ -3,7 +3,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from python_ta.contracts import check_contracts
-from typing import Literal
 
 
 from match import Match
@@ -30,4 +29,10 @@ class Team:
 if __name__ == "__main__":
     import python_ta
 
-    python_ta.check_all()
+    python_ta.check_all(
+        config={
+            "extra-imports": ["__future__", "dataclasses", "match"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )
