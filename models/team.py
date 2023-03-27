@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 
 from match import Match
+import premier_league
 
 @dataclass
 class Team:
@@ -19,3 +20,5 @@ class Team:
     """
     name: str
     matches: list[Match]
+    seasons: list[premier_league.Seasons]
+    
