@@ -5,8 +5,8 @@ from team import Team
 from match import Match
 
 
-class Season:
-    """A graph-based representation of a Premier League season.
+class PremierLeague:
+    """A graph-based representation of Premier League matches and teams.
 
 
     Instance Attributes:
