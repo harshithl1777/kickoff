@@ -20,7 +20,7 @@ class Match:
         - details: A mapping from each team name to its corresponding match details.
 
     Representation Invariants:
-        - len(teams) == 2
+        - len(teams) == 2   
     """
     away_team: Team
     home_team: Team
@@ -44,6 +44,7 @@ class MatchDetails:
     Representation Invariants:
         ...
     """
+    team: Team
     fouls_commited: int
     red_cards: int
     yellow_cards: int
