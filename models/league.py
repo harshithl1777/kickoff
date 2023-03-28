@@ -1,4 +1,9 @@
-"""Module containing the League class and other related components"""
+"""Kickoff Project: models / league.py
+
+This module contains the League class and other related components.
+
+This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
+"""
 
 from team import Team
 from match import Match

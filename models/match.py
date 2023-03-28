@@ -1,4 +1,9 @@
-"""Module containing the Match class and other related components"""
+"""Kickoff Project: models / match.py
+
+This module contains the Match class and other related components.
+
+This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
+"""
 
 from __future__ import annotations
 from datetime import datetime

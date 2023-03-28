@@ -1,4 +1,9 @@
-"""Module containing the Team class and other related components"""
+"""Kickoff Project: models / team.py
+
+This module contains the Team class and other related components.
+
+This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
+"""
 
 from __future__ import annotations
 from dataclasses import dataclass
