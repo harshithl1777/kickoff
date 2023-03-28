@@ -12,11 +12,10 @@ from python_ta.contracts import check_contracts
 class Constants:
     """This class contains a dictionary of constants that are used throughout this application."""
 
-    constants: dict
+    _constants: dict[str, Any] = {}
 
-    def __init__(self) -> None:
-        self.constants = {}
-        self.constants["USE_COLUMNS"] = [
+    def __init__(self):
+        self._constants["USE_COLUMNS"] = [
             "Date",
             "HomeTeam",
             "AwayTeam",
@@ -37,8 +36,8 @@ class Constants:
             "HR",
             "AR",
         ]
-        self.constants["DATE_COLUMNS"] = ["Date"]
-        self.constants[
+        self._constants["DATE_COLUMNS"] = ["Date"]
+        self._constants[
             "HELP_COMMAND_INTRO"
         ] = "Kickoff is a football data analysis app that provides records and insights to football fans everywhere!"
 
@@ -48,7 +47,7 @@ class Constants:
         Preconditions:
             - key in self.constants
         """
-        return self.constants[key]
+        return self._constants[key]
 
 
 if __name__ == "__main__":

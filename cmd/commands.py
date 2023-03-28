@@ -7,7 +7,6 @@ to other functions / classes.
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
 
-import rich
 import typer
 from utils.constants import Constants
 
