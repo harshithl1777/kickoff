@@ -1,9 +1,13 @@
-"""Module containing the Match class and other related components"""
+"""Kickoff Project: models / match.py
+
+This module contains the Match class and other related components.
+
+This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
+"""
 
 from __future__ import annotations
 from datetime import datetime
 from dataclasses import dataclass
-from typing import Literal
 from python_ta.contracts import check_contracts
 
 import team
@@ -25,6 +29,7 @@ class Match:
             - len(teams) == 2
             - self.season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
             '2017-18', '2018-19']
+            - self.result in ['HOME_WIN', 'AWAY_WIN', 'DRAW']
     """
 
     season: str
@@ -32,7 +37,7 @@ class Match:
     home_team: team.Team
     date_time: datetime
     details: dict[team.Team, MatchDetails]
-    result: Literal["HOME_WIN", "AWAY_WIN", "DRAW"]
+    result: str
 
 
 @check_contracts
@@ -67,4 +72,10 @@ class MatchDetails:
 if __name__ == "__main__":
     import python_ta
 
-    python_ta.check_all()
+    python_ta.check_all(
+        config={
+            "extra-imports": ["__future__", "datetime", "dataclasses", "team"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )

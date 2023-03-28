@@ -3,5 +3,13 @@
         "**/__init__.py": true,
         "**/__pycache__": true
     },
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.analysis.typeCheckingMode": "off",
+    "python.linting.lintOnSave": true,
+    "python.linting.flake8Args": ["--max-line-length=120"],
+    "pylint.severity": {
+        "convention": "Error"
+    },
+    "pylint.args": ["--max-line-length=120"]
 }

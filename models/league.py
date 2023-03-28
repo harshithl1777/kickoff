@@ -1,4 +1,9 @@
-"""Module containing the League class and other related components"""
+"""Kickoff Project: models / league.py
+
+This module contains the League class and other related components.
+
+This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
+"""
 
 from team import Team
 from match import Match
@@ -27,4 +32,10 @@ class League:
 if __name__ == "__main__":
     import python_ta
 
-    python_ta.check_all()
+    python_ta.check_all(
+        config={
+            "extra-imports": ["team", "match"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )
