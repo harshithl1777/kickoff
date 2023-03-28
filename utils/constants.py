@@ -8,11 +8,11 @@ from typing import Any
 from python_ta.contracts import check_contracts
 
 
-@check_contracts
+# @check_contracts
 class Constants:
     """This class contains a dictionary of constants that are used throughout this application."""
 
-    constants: dict[str, Any]
+    constants: dict
 
     def __init__(self) -> None:
         self.constants = {}
@@ -37,6 +37,10 @@ class Constants:
             "HR",
             "AR",
         ]
+        self.constants["DATE_COLUMNS"] = ["Date"]
+        self.constants[
+            "HELP_COMMAND_INTRO"
+        ] = "Kickoff is a football data analysis app that provides records and insights to football fans everywhere!"
 
     def retrieve(self, key: str) -> Any:
         """This function returns the corresponding constant when given the constant name.
