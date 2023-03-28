@@ -22,8 +22,8 @@ class Match:
             - home_team: The team playing at its home ground in this match.
             - away_team: The team playing away from its home ground in this match.
             - date_time: The date and time of the match played.
-            - winner: The name of the winning team of the match, or None if the match ended in a draw.
             - details: A mapping from each team name to its corresponding match details.
+            - result: The outcome of the match
 
         Representation Invariants:
             - len(teams) == 2

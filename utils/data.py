@@ -13,6 +13,7 @@ from utils.constants import Constants
 from models.league import League
 from models.match import Match, MatchDetails
 from models.team import Team
+from datetime import datetime
 
 
 @check_contracts
@@ -36,28 +37,31 @@ def convert_to_graph(dataframe: pd.DataFrame, league: League) -> None:
     Preconditions:
         - dataframe is a valid representation of a csv file stored in the assets folder
     """
-
+    
     # TODO: Not sure how to work with pandas dataframe, someone take a look and edit as necessary
-    for row in dataframe:  
-        if row[home_team] not in league.teams:
-            home_team = Team(row["HomeTeam"], [])
+    for i in len(dataframe.index):  
+        
+        if dataframe["HomeTeam"][i] not in league.teams:
+            home_team = Team(dataframe["HomeTeam"][i], [])
         else:
-            home_team = league.teams[row["HomeTeam"]]
+            home_team = league.teams[dataframe["HomeTeam"][i]]
 
-        if row[away_team] not in league.teams:
-            away_team = Team(row["AwayTeam"], [])
+        if dataframe["AwayTeam"][i] not in league.teams:
+            away_team = Team(dataframe["AwayTeam"][i], [])
         else:
-            away_team = league.teams[row["AwayTeam"]]
+            away_team = league.teams[dataframe["AwayTeam"][i]]
         
 
-        home_team_details = MatchDetails(home_team, row["HF"], row["HS"], row["HST"], row["HR"], row["HY"], row["HTHG"], row["FTHG"])
-        away_team_details = MatchDetails(away_team, row["AF"], row["AS"], row["AST"], row["AR"], row["AY"], row["HTAG"], row["FTAG"])
+        home_team_details = MatchDetails(home_team, dataframe["HF"][i], dataframe["HS"][i], dataframe["HST"][i], dataframe["HR"][i], dataframe["HY"][i], dataframe["HTHG"][i], dataframe["FTHG"][i])
+        away_team_details = MatchDetails(away_team, dataframe["AF"][i], dataframe["AS"][i], dataframe["AST"][i], dataframe["AR"][i], dataframe["AY"][i], dataframe["HTAG"][i], dataframe["FTAG"][i])
         result_status = {"H": "HOME_WIN", "A": "AWAY_WIN", "D": "DRAW"}
 
-        # TODO: Fix date and season attribute
-        match = Match('season', home_team, away_team, 'date', {home_team: home_team_details, away_team: away_team_details}, result_status[row["FTR"]])
+        # TODO: Fix season attribute
+        date_time = datetime.strptime(dataframe["Date"][i], "%m/%d/%y")
+        match = Match('season', home_team, away_team, date_time, {home_team: home_team_details, away_team: away_team_details}, result_status[dataframe["FTR"][i]])
         home_team.matches.append(match)
-        away_team.mathes.append(match)
+        away_team.matches.append(match)
+        league.matches.append(match)
 
 if __name__ == "__main__":
     import python_ta
