@@ -7,6 +7,13 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 """
 
 from cmd.commands import app
+from utils.data import generate_pandas_df, convert_to_graph
+from models.league import League
 
 if __name__ == "__main__":
-    app()
+    # app()
+    l = League()
+    df = generate_pandas_df('./assets/season-0910.csv')
+    convert_to_graph(df, l, "2009-10")
+    print(l.matches[0])
+    

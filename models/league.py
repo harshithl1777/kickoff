@@ -5,8 +5,8 @@ This module contains the League class and other related components.
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
 
-from team import Team
-from match import Match
+from models.team import Team
+from models.match import Match
 
 
 class League:
@@ -25,8 +25,8 @@ class League:
         - len(self.matches) > 0
     """
 
-    teams: dict[str, Team]
-    matches: list[Match]
+    teams: dict[str, Team] = {}
+    matches: list[Match] = []
 
 
 if __name__ == "__main__":

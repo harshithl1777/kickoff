@@ -10,10 +10,10 @@ from dataclasses import dataclass
 from python_ta.contracts import check_contracts
 
 
-from match import Match
+from models.match import Match
 
 
-@check_contracts
+#@check_contracts
 @dataclass
 class Team:
     """A football team playing in a particular season of the Premier League.
