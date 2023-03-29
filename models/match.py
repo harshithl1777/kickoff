@@ -6,42 +6,42 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 """
 
 from __future__ import annotations
-from datetime import datetime
 from dataclasses import dataclass
 from python_ta.contracts import check_contracts
 
-import team
+import models.team as team
 
 
-@check_contracts
-@dataclass
+# @check_contracts
+@dataclass(repr=True)
 class Match:
     """A Premier League match between two teams in a particular season.
 
         Instance Attributes:
             - home_team: The team playing at its home ground in this match.
             - away_team: The team playing away from its home ground in this match.
-            - date_time: The date and time of the match played.
-            - winner: The name of the winning team of the match, or None if the match ended in a draw.
+            - order: The order in which this game is played in the corresonding season.
             - details: A mapping from each team name to its corresponding match details.
+            - result: The team that won the match or None if the match was a draw
 
         Representation Invariants:
             - len(teams) == 2
             - self.season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
             '2017-18', '2018-19']
             - self.result in ['HOME_WIN', 'AWAY_WIN', 'DRAW']
+            - 1 <= self.order
     """
 
     season: str
-    away_team: team.Team
     home_team: team.Team
-    date_time: datetime
-    details: dict[team.Team, MatchDetails]
-    result: str
+    away_team: team.Team
+    order: int
+    details: dict[str, MatchDetails]
+    result: team.Team | None
 
 
-@check_contracts
-@dataclass
+# @check_contracts
+@dataclass(repr=True)
 class MatchDetails:
     """The details of a team's performance in a Premier League match.
 
