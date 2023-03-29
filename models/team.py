@@ -13,8 +13,8 @@ from python_ta.contracts import check_contracts
 from models.match import Match
 
 
-#@check_contracts
-@dataclass
+# @check_contracts
+@dataclass(repr=True)
 class Team:
     """A football team playing in a particular season of the Premier League.
 

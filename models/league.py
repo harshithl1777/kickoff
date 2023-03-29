@@ -25,8 +25,55 @@ class League:
         - len(self.matches) > 0
     """
 
-    teams: dict[str, Team] = {}
-    matches: list[Match] = []
+    _teams: dict[str, Team]
+    _matches: list[Match]
+
+    def __init__(self) -> None:
+        self._teams = {}
+        self._matches = []
+
+    def add_team(self, name: str) -> Team:
+        """Add a new team with the given team name to this league and return it.
+
+        Preconditions
+            - name not in self._teams
+        """
+        team = Team(name=name, matches=[])
+        self._teams[name] = team
+        return team
+
+    def add_match(self, team1: str, team2: str, match: Match) -> None:
+        """Add a new match between the two given teams.
+        Add each team to the league if they have not been added already.
+
+        Preconditions
+            - team1 in {match.away_team.name, match.home_team.name}
+            - team2 in {match.away_team.name, match.home_team.name}
+        """
+        if team1 not in self._teams:
+            self.add_team(team1)
+        if team2 not in self._teams:
+            self.add_team(team2)
+
+        self._teams[team1].matches.append(match)
+        self._teams[team2].matches.append(match)
+        self._matches.append(match)
+
+    def team_in_league(self, name: str) -> bool:
+        """Check if the given team exists within this league by the given name"""
+        return name in self._teams
+
+    def get_team(self, name: str) -> Team:
+        """Retrieve a specific team object based on the given name
+
+        Preconditions
+            - name in self._teams
+        """
+        return self._teams[name]
+
+    def get_match(self, order: int) -> Match:
+        """Retrieve a specific match based on the given order number of the match"""
+        return self._matches[order - 1]
 
 
 if __name__ == "__main__":

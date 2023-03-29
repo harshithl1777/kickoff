@@ -13,8 +13,8 @@ from python_ta.contracts import check_contracts
 import models.team as team
 
 
-#@check_contracts
-@dataclass
+# @check_contracts
+@dataclass(repr=True)
 class Match:
     """A Premier League match between two teams in a particular season.
 
@@ -37,12 +37,12 @@ class Match:
     home_team: team.Team
     away_team: team.Team
     order: int
-    details: tuple(MatchDetails, MatchDetails)
+    details: dict[str, MatchDetails]
     result: team.Team | None
 
 
-#@check_contracts
-@dataclass
+# @check_contracts
+@dataclass(repr=True)
 class MatchDetails:
     """The details of a team's performance in a Premier League match.
 
