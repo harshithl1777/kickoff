@@ -12,7 +12,6 @@ from python_ta.contracts import check_contracts
 from utils.constants import Constants
 from models.league import League
 from models.match import Match, MatchDetails
-from models.team import Team
 
 
 # @check_contracts

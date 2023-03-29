@@ -6,7 +6,6 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 """
 
 from __future__ import annotations
-from datetime import datetime
 from dataclasses import dataclass
 from python_ta.contracts import check_contracts
 
