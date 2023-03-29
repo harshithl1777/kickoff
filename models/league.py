@@ -49,6 +49,8 @@ class League:
         Preconditions
             - team1 in {match.away_team.name, match.home_team.name}
             - team2 in {match.away_team.name, match.home_team.name}
+            - team1 != team2
+            - self._matches[-1].order < match.order
         """
         if team1 not in self._teams:
             self.add_team(team1)
