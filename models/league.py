@@ -8,6 +8,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 from models.team import Team
 from models.match import Match
 
+from typing import Optional
 
 class League:
     """A graph-based representation of Premier League matches and teams.
@@ -77,8 +78,9 @@ class League:
         """Retrieve a specific match based on the given order number of the match"""
         return self._matches[order - 1]
 
-    def overall_winrate(self, team_name: str, season: str) -> float:
-        """Return the overall winrate of the Team with team_name in the season.
+    def overall_winrate(self, team_name: str, season: Optional[str] = None) -> float:
+        """Return the overall winrate of the Team with team_name in the League.
+        Only consider matches in the season if the season is provided.
 
         Raise a ValueError if the team did not take part in the season.
 
@@ -92,7 +94,7 @@ class League:
 
         team = self._teams[team_name]
         for match in team.matches:
-            if match.season != season:
+            if season is not None and match.season != season:
                 continue
             total_matches += 1
             if match.result == team:
