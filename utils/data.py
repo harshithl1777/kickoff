@@ -6,12 +6,42 @@ pandas DataFrames and League graphs.
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
 
+import os
+import time
 import pandas as pd
+from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.console import Console
 from python_ta.contracts import check_contracts
 
 from utils.constants import Constants
 from models.league import League
 from models.match import Match, MatchDetails
+
+
+def load_csv_files() -> League:
+    """Load all csv files in /assets into a League class and return it"""
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task(description="Retrieving datasets...", total=None)
+
+        files = os.listdir("./assets")
+        file_paths = ["./assets/" + file for file in files if "csv" in file]
+        time.sleep(0.5)
+
+        progress.add_task(description="Parsing data...", total=None)
+        dataframes = [generate_pandas_dataframe(path) for path in file_paths]
+        time.sleep(0.5)
+
+        progress.add_task(description="Generating graph...", total=None)
+        league = League()
+        for i, dataframe in enumerate(dataframes):
+            season = files[i][:7]
+            convert_to_graph(dataframe, league, season)
+
+        time.sleep(0.5)
+
+    console = Console()
+    console.line()
+    console.print("Graph initialization complete!", style="green")
 
 
 # @check_contracts
@@ -22,15 +52,12 @@ def generate_pandas_dataframe(csv_file: str) -> pd.DataFrame:
         - csv_file is a valid csv file stored in the assets folder
     """
     constants = Constants()
-    dataframe = pd.read_csv(
-        csv_file, usecols=constants.retrieve("USE_COLUMNS"), parse_dates=constants.retrieve("DATE_COLUMNS")
-    )
-    dataframe.sort_values(by="Date", inplace=True)
+    dataframe = pd.read_csv(csv_file, usecols=constants.retrieve("USE_COLUMNS"))
     return dataframe
 
 
 # @check_contracts
-def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> League:
+def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> None:
     """Populate the graph with the provided dataframe representing the match and overall season statistics
 
     Preconditions:
@@ -85,8 +112,6 @@ def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> Le
         )
 
         league.add_match(ht_name, at_name, match)
-
-        return league
 
 
 if __name__ == "__main__":
