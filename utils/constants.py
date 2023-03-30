@@ -16,7 +16,6 @@ class Constants:
 
     def __init__(self):
         self._constants["USE_COLUMNS"] = [
-            "Date",
             "HomeTeam",
             "AwayTeam",
             "FTHG",
@@ -36,7 +35,6 @@ class Constants:
             "HR",
             "AR",
         ]
-        self._constants["DATE_COLUMNS"] = ["Date"]
         self._constants[
             "HELP_COMMAND_INTRO"
         ] = "Kickoff is a football data analysis app that provides records and insights to football fans everywhere!"

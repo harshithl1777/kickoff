@@ -25,7 +25,7 @@ def full(
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    raise NotImplementedError
+    print("To be implemented!")
 
 
 @app.command()
