@@ -19,7 +19,7 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
     Preconditons:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
     """
     total_matches = 0
     total_wins = 0
@@ -44,7 +44,7 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
     Preconditions:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
     """
     total_matches = 0
     goals_scored = 0
@@ -69,7 +69,7 @@ def get_team_yellow_cards(league: League, team_name: str, season: Optional[str] 
     Preconditions:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
     """
     total_matches = 0
     yellow_cards = 0
@@ -94,7 +94,7 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
     Preconditions:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
     """
     total_matches = 0
     red_cards = 0
