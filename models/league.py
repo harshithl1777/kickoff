@@ -28,11 +28,9 @@ class League:
     """
 
     _teams: dict[str, Team]
-    _matches: list[Match]
 
     def __init__(self) -> None:
         self._teams = {}
-        self._matches = []
 
     def add_team(self, name: str) -> Team:
         """Add a new team with the given team name to this league and return it.
