@@ -20,7 +20,7 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     total_wins = 0
@@ -43,7 +43,7 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     goals_scored = 0
@@ -66,7 +66,7 @@ def get_team_yellow_cards(league: League, team_name: str, season: Optional[str] 
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     yellow_cards = 0
@@ -89,7 +89,7 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     red_cards = 0
