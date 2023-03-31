@@ -24,7 +24,7 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
     total_matches = 0
     total_wins = 0
 
-    team = league._teams[team_name]
+    team = league.get_team(team_name)
     for match in team.matches:
         if season is not None and match.season != season:
             continue
@@ -48,7 +48,7 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
     """
     total_matches = 0
     goals_scored = 0
-    team = league._teams[team_name]
+    team = league.get_team(team_name)
 
     for match in team.matches:
         if season is not None and match.season != season:
@@ -73,7 +73,7 @@ def get_team_yellow_cards(league: League, team_name: str, season: Optional[str] 
     """
     total_matches = 0
     yellow_cards = 0
-    team = league._teams[team_name]
+    team = league.get_team(team_name)
 
     for match in team.matches:
         if season is not None and match.season != season:
@@ -98,7 +98,7 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
     """
     total_matches = 0
     red_cards = 0
-    team = league._teams[team_name]
+    team = league.get_team(team_name)
 
     for match in team.matches:
         if season is not None and match.season != season:
