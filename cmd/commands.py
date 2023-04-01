@@ -34,15 +34,15 @@ def winrate(
     """
 
     if not league.team_in_league(team):
-        io.print_error("Precondition violated: team is a valid team")
+        io.print_error("Team is not a valid team")
         return
     if season is not None and season not in constants.retrieve("VALID_SEASONS"):
         io.print_error(
-            "Precondition violated: season is in the format '20XX-XX' between 2009-10 and 2018-19")
+            "Season is not in the format '20XX-XX' between 2009-10 and 2018-19")
         return
     if season is not None and season not in league.get_team(team).seasons:
         io.print_error(
-            "Precondition violated: If season is specified, team must have played a match in the season")
+            "Team did not play a match in the season")
         return
 
     console = Console()
