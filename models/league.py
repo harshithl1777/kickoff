@@ -7,6 +7,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 
 from models.team import Team
 from models.match import Match
+from typing import Optional
 
 
 class League:
@@ -69,6 +70,18 @@ class League:
         """
         return self._teams[name]
 
+    def get_team_names(self, season: Optional[str] = None) -> list[str]:
+        """Retreive the names of the teams in the league. If the season attribute is provided
+        then this function will only return teams that have played in that season.
+
+        Preconditions:
+            - season is a season string in the format '20XX-XX'
+        """
+        team_names = list(self._teams.keys())
+        if season is None:
+            return team_names
+
+        return [team_name for team_name in team_names if season in self.get_team(team_name).seasons]
 
 if __name__ == "__main__":
     import python_ta
