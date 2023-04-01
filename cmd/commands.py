@@ -13,6 +13,7 @@ from rich.console import Console
 
 from utils import constants, data
 from controllers import basic, optimization, records
+import cmd.output as io
 
 league = data.load_csv_files()
 constants = constants.Constants()
@@ -29,7 +30,21 @@ def winrate(
     Preconditions
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - If season is specified, team must have played a match in the season
     """
+
+    if not league.team_in_league(team):
+        io.print_error("Precondition violated: team is a valid team")
+        return
+    if season is not None and season not in constants.retrieve("VALID_SEASONS"):
+        io.print_error(
+            "Precondition violated: season is in the format '20XX-XX' between 2009-10 and 2018-19")
+        return
+    if season is not None and season not in league.get_team(team).seasons:
+        io.print_error(
+            "Precondition violated: If season is specified, team must have played a match in the season")
+        return
+
     console = Console()
     winrate = round(basic.overall_winrate(league, team, season), 2)
 
