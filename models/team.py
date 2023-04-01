@@ -25,7 +25,7 @@ class Team:
 
     Representation Invariants:
         - len(self.matches) > 0
-        - len(seasons) > 0
+        - len(self.seasons) > 0
     """
 
     name: str

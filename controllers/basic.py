@@ -1,4 +1,4 @@
-"""Kickoff Project: models / basic.py
+"""Kickoff Project: controllers / basic.py
 
 This module contains functionality for performing basic analysis on the premier league data.
 
@@ -32,6 +32,7 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
             total_wins += 1
 
     return (total_wins / total_matches) * 100
+
 
 def get_team_goals_scored(league: League, team_name: str, season: Optional[str] = None):
     """Return the average number of goals scored by a team in their matches.
@@ -101,3 +102,14 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
 
     return red_cards / total_matches
 
+
+if __name__ == "__main__":
+    import python_ta
+
+    python_ta.check_all(
+        config={
+            "extra-imports": ["typing", "models.league"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )
