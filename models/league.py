@@ -48,7 +48,6 @@ class League:
             - team1 in {match.away_team.name, match.home_team.name}
             - team2 in {match.away_team.name, match.home_team.name}
             - team1 != team2
-            - self._matches[-1].order < match.order
         """
         if team1 not in self._teams:
             self.add_team(team1)
@@ -57,7 +56,6 @@ class League:
 
         self._teams[team1].matches.append(match)
         self._teams[team2].matches.append(match)
-        self._matches.append(match)
 
     def team_in_league(self, name: str) -> bool:
         """Check if the given team exists within this league by the given name"""
@@ -70,10 +68,6 @@ class League:
             - name in self._teams
         """
         return self._teams[name]
-
-    def get_match(self, order: int) -> Match:
-        """Retrieve a specific match based on the given order number of the match"""
-        return self._matches[order - 1]
 
 
 if __name__ == "__main__":
