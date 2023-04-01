@@ -42,7 +42,7 @@ def winrate(
     else:
         display_str = f"{team}'s winrate in the {season} season is {winrate_percent}%."
 
-    io.info(message=display_str, color="blue")
+    io.info(message=display_str, color="dodger_blue1")
 
 
 @app.command()

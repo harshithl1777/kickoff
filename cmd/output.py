@@ -17,6 +17,7 @@ import typer
 def info(message: str, color: str) -> None:
     """Uses rich to print a colored information message."""
     console = Console()
+    console.line()
     console.print(message, style=color)
 
 
@@ -24,8 +25,8 @@ def error(message: str) -> None:
     """Uses rich to print a colored error message."""
     console = Console()
     console.line()
-    error = "Error: " + message
-    console.print(error, style="red")
+    error_message = "Error: " + message
+    console.print(error_message, style="red")
     raise typer.Exit()
 
 
