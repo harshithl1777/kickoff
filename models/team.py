@@ -25,10 +25,12 @@ class Team:
 
     Representation Invariants:
         - len(self.matches) > 0
+        - len(self.seasons) > 0
     """
 
     name: str
     matches: list[Match]
+    seasons: set[str]
 
 
 if __name__ == "__main__":
