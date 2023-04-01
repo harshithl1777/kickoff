@@ -8,32 +8,44 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 """
 
 import typer
-from utils.constants import Constants
-from controllers.records import highest_win_loss_streaks
+from typing import Optional
+from rich.console import Console
 
-constants = Constants()
+from utils import constants, data
+from controllers import basic, optimization, records
+
+league = data.load_csv_files()
+constants = constants.Constants()
 app = typer.Typer(help=constants.retrieve("HELP_COMMAND_INTRO"))
 
 
 @app.command()
 def winrate(
-    team: str = typer.Option(default="ALL"), season: str = typer.Option(default="ALL", help="ex. 2009-10")
+    team: str = typer.Option(...), season: Optional[str] = typer.Option(default=None, help="ex. 2009-10")
 ) -> None:
-    """Outputs the winrate statistic for the specified team & season.
-    If no arguments are found, the statistic will be calculated for all teams and seasons.
+    """Outputs the winrate percent of the specified team.
+    If season is specified, the winrate will be calculated only for the season.
 
     Preconditions
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    raise NotImplementedError
+    console = Console()
+    winrate = round(basic.overall_winrate(league, team, season), 2)
+
+    if season is None:
+        display_str = f"{team}'s winrate across all Premier League seasons is {winrate}%"
+    else:
+        display_str = f"{team}'s winrate in the {season} season is {winrate}%"
+
+    console.print(display_str)
 
 
 @app.command()
 def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
     """Outputs the longest win & loss streaks statistic for the specified season.
 
-    Preconditions
+    Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
     raise NotImplementedError

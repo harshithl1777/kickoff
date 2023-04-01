@@ -43,6 +43,8 @@ def load_csv_files() -> League:
     console.line()
     console.print("Graph initialization complete!", style="green")
 
+    return league
+
 
 # @check_contracts
 def generate_pandas_dataframe(csv_file: str) -> pd.DataFrame:
