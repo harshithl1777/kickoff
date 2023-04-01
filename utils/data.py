@@ -39,10 +39,6 @@ def load_csv_files() -> League:
 
         time.sleep(0.5)
 
-    console = Console()
-    console.line()
-    console.print("Graph initialization complete!", style="green")
-
     return league
 
 

@@ -38,7 +38,7 @@ def winrate(
     else:
         display_str = f"{team}'s winrate in the {season} season is {winrate}%"
 
-    console.print(display_str)
+    console.print(display_str, style="blue")
 
 
 @app.command()
