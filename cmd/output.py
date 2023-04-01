@@ -38,18 +38,18 @@ def table(title: str, headers: list[str], colors: list[str], data: list[tuple[An
         - len({len(row) for row in data}) == 1
     """
     title_style = Style(bold=True)
-    table = Table(title=title, width=width, box=box.HORIZONTALS, show_footer=False, title_style=title_style)
+    output_table = Table(title=title, width=width, box=box.HORIZONTALS, show_footer=False, title_style=title_style)
 
     for i in range(len(headers)):
-        table.add_column(headers[i], style=colors[i])
+        output_table.add_column(headers[i], style=colors[i])
 
     for row in data:
         renderable_row = [str(cell) for cell in row]
-        table.add_row(*renderable_row)
+        output_table.add_row(*renderable_row)
 
     console = Console()
     console.line()
-    console.print(table)
+    console.print(output_table)
 
 
 if __name__ == "__main__":
