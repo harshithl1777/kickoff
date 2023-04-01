@@ -11,15 +11,14 @@ from models.league import League
 
 
 def overall_winrate(league: League, team_name: str, season: Optional[str] = None) -> float:
-    """Return the overall winrate of the Team with team_name in the League.
+    """Return the overall winrate (as a percentage) of the Team with team_name in the League.
     Only consider matches in the season if the season is provided.
-
-    Raise a ValueError if the team did not take part in the season.
 
     Preconditons:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     total_wins = 0
@@ -32,10 +31,7 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
         if match.result == team:
             total_wins += 1
 
-    if total_matches == 0:
-        raise ValueError("team did not play in season")
-
-    return total_wins / total_matches
+    return (total_wins / total_matches) * 100
 
 
 def get_team_goals_scored(league: League, team_name: str, season: Optional[str] = None):
@@ -45,7 +41,8 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
     Preconditions:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     goals_scored = 0
@@ -57,9 +54,6 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
         total_matches += 1
         goals_scored += match.details[team_name].full_time_goals
 
-    if total_matches == 0:
-        raise ValueError("team did not play in season")
-
     return goals_scored / total_matches
 
 
@@ -70,7 +64,8 @@ def get_team_yellow_cards(league: League, team_name: str, season: Optional[str] 
     Preconditions:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     yellow_cards = 0
@@ -82,9 +77,6 @@ def get_team_yellow_cards(league: League, team_name: str, season: Optional[str] 
         total_matches += 1
         yellow_cards += match.details[team_name].yellow_cards
 
-    if total_matches == 0:
-        raise ValueError("team did not play in season")
-
     return yellow_cards / total_matches
 
 
@@ -95,7 +87,8 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
     Preconditions:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
-        - team_name in self._teams
+        - team_name in league._teams
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     red_cards = 0
@@ -106,9 +99,6 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
             continue
         total_matches += 1
         red_cards += match.details[team_name].red_cards
-
-    if total_matches == 0:
-        raise ValueError("team did not play in season")
 
     return red_cards / total_matches
 

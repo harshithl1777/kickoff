@@ -11,6 +11,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.style import Style
 from rich import box
+import typer
 
 
 def print_error(message: str) -> None:
@@ -19,6 +20,7 @@ def print_error(message: str) -> None:
     console.line()
     error = "Error: " + message
     console.print(error, style="red")
+    raise typer.Exit()
 
 
 def output_table(title: str, headers: list[str], colors: list[str], data: list[tuple[Any]], width: int) -> None:
