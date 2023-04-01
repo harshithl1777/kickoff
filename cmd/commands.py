@@ -9,7 +9,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 
 import typer
 from utils.constants import Constants
-from controllers.records import 
+from controllers.records import highest_win_loss_streaks
 
 constants = Constants()
 app = typer.Typer(help=constants.retrieve("HELP_COMMAND_INTRO"))
@@ -37,7 +37,6 @@ def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
     raise NotImplementedError
-    
 
 
 if __name__ == "__main__":
