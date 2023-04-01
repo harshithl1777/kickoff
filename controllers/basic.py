@@ -1,4 +1,4 @@
-"""Kickoff Project: models / basic.py
+"""Kickoff Project: controllers / basic.py
 
 This module contains functionality for performing basic analysis on the premier league data.
 
@@ -33,9 +33,10 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
             total_wins += 1
 
     if total_matches == 0:
-        raise ValueError('team did not play in season')
+        raise ValueError("team did not play in season")
 
     return total_wins / total_matches
+
 
 def get_team_goals_scored(league: League, team_name: str, season: Optional[str] = None):
     """Return the average number of goals scored by a team in their matches.
@@ -57,7 +58,7 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
         goals_scored += match.details[team_name].full_time_goals
 
     if total_matches == 0:
-        raise ValueError('team did not play in season')
+        raise ValueError("team did not play in season")
 
     return goals_scored / total_matches
 
@@ -82,7 +83,7 @@ def get_team_yellow_cards(league: League, team_name: str, season: Optional[str] 
         yellow_cards += match.details[team_name].yellow_cards
 
     if total_matches == 0:
-        raise ValueError('team did not play in season')
+        raise ValueError("team did not play in season")
 
     return yellow_cards / total_matches
 
@@ -107,7 +108,18 @@ def get_team_red_cards(league: League, team_name: str, season: Optional[str] = N
         red_cards += match.details[team_name].red_cards
 
     if total_matches == 0:
-        raise ValueError('team did not play in season')
+        raise ValueError("team did not play in season")
 
     return red_cards / total_matches
 
+
+if __name__ == "__main__":
+    import python_ta
+
+    python_ta.check_all(
+        config={
+            "extra-imports": ["typing", "models.league"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )

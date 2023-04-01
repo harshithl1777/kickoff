@@ -5,6 +5,7 @@ This module contains the League class and other related components.
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
 
+from typing import Optional
 from models.team import Team
 from models.match import Match
 
@@ -36,9 +37,18 @@ class League:
         Preconditions
             - name not in self._teams
         """
-        team = Team(name=name, matches=[])
+        team = Team(name=name, matches=[], seasons=set())
         self._teams[name] = team
         return team
+
+    def add_season_to_team(self, team: str, season: str) -> None:
+        """Add a new season to the given team.
+
+        Preconditions
+            - name in self._teams
+            - season is a season string in the format '20XX-XX'
+        """
+        self._teams[team].seasons.add(season)
 
     def add_match(self, team1: str, team2: str, match: Match) -> None:
         """Add a new match between the two given teams.
@@ -68,6 +78,19 @@ class League:
             - name in self._teams
         """
         return self._teams[name]
+
+    def get_team_names(self, season: Optional[str] = None) -> list[str]:
+        """Retreive the names of the teams in the league. If the season attribute is provided
+        then this function will only return teams that have played in that season.
+
+        Preconditions:
+            - season is a season string in the format '20XX-XX'
+        """
+        team_names = list(self._teams.keys())
+        if season is None:
+            return team_names
+
+        return [team_name for team_name in team_names if season in self.get_team(team_name).seasons]
 
 
 if __name__ == "__main__":

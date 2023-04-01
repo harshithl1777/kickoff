@@ -9,23 +9,10 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 
 import typer
 from utils.constants import Constants
+from controllers.records import 
 
 constants = Constants()
 app = typer.Typer(help=constants.retrieve("HELP_COMMAND_INTRO"))
-
-
-@app.command()
-def full(
-    team: str = typer.Option(default="ALL"), season: str = typer.Option(default="ALL", help="ex. 2009-10")
-) -> None:
-    """Outputs all statistics for the specified team & season.
-    If no arguments are found, the statistic will be calculated for all teams and seasons.
-
-    Preconditions
-        - team is a valid team
-        - season is in the format '20XX-XX' between 2009-10 and 2018-19
-    """
-    print("To be implemented!")
 
 
 @app.command()
@@ -42,7 +29,24 @@ def winrate(
     raise NotImplementedError
 
 
+@app.command()
+def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
+    """Outputs the longest win & loss streaks statistic for the specified season.
+
+    Preconditions
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    raise NotImplementedError
+    
+
+
 if __name__ == "__main__":
     import python_ta
 
-    python_ta.check_all()
+    python_ta.check_all(
+        config={
+            "extra-imports": ["typer", "utils.constants"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )

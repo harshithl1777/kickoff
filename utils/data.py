@@ -78,6 +78,9 @@ def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> No
         else:
             away_team = league.get_team(at_name)
 
+        league.add_season_to_team(ht_name, season)
+        league.add_season_to_team(at_name, season)
+
         home_team_details = MatchDetails(
             team=home_team,
             fouls=dataframe["HF"][i],
