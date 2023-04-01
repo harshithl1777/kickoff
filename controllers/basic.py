@@ -11,10 +11,8 @@ from models.league import League
 
 
 def overall_winrate(league: League, team_name: str, season: Optional[str] = None) -> float:
-    """Return the overall winrate of the Team with team_name in the League.
+    """Return the overall winrate (as a percentage) of the Team with team_name in the League.
     Only consider matches in the season if the season is provided.
-
-    Raise a ValueError if the team did not take part in the season.
 
     Preconditons:
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
@@ -33,7 +31,7 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
         if match.result == team:
             total_wins += 1
 
-    return total_wins / total_matches
+    return (total_wins / total_matches) * 100
 
 def get_team_goals_scored(league: League, team_name: str, season: Optional[str] = None):
     """Return the average number of goals scored by a team in their matches.
