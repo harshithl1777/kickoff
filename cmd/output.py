@@ -14,8 +14,14 @@ from rich import box
 import typer
 
 
-def print_error(message: str) -> None:
-    """Uses rich to print a colored error message"""
+def info(message: str, color: str) -> None:
+    """Uses rich to print a colored information message."""
+    console = Console()
+    console.print(message, style=color)
+
+
+def error(message: str) -> None:
+    """Uses rich to print a colored error message."""
     console = Console()
     console.line()
     error = "Error: " + message
@@ -23,8 +29,8 @@ def print_error(message: str) -> None:
     raise typer.Exit()
 
 
-def output_table(title: str, headers: list[str], colors: list[str], data: list[tuple[Any]], width: int) -> None:
-    """Uses rich to print a table with the specified table, headers, colors and data
+def table(title: str, headers: list[str], colors: list[str], data: list[tuple[Any]], width: int) -> None:
+    """Uses rich to print a table with the specified table, headers, colors and data.
 
     Preconditions:
         - len({len(headers), len(colors), len(data[0])}) == 1

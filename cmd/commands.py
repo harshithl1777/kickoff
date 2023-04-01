@@ -11,7 +11,6 @@ import cmd.output as io
 import cmd.errors as errors
 from typing import Optional
 import typer
-from rich.console import Console
 
 from utils import constants, data
 from controllers import basic, records
@@ -36,16 +35,14 @@ def winrate(
     errors.validate_team(league, team)
     errors.validate_season(season)
     errors.validate_team_in_season(league, team, season)
-
-    console = Console()
     winrate_percent = round(basic.overall_winrate(league, team, season), 2)
 
     if season is None:
-        display_str = f"{team}'s winrate across all Premier League seasons is {winrate_percent}%"
+        display_str = f"{team}'s winrate across all Premier League seasons is {winrate_percent}%."
     else:
-        display_str = f"{team}'s winrate in the {season} season is {winrate_percent}%"
+        display_str = f"{team}'s winrate in the {season} season is {winrate_percent}%."
 
-    console.print(display_str, style="blue")
+    io.info(message=display_str, color="blue")
 
 
 @app.command()
@@ -55,8 +52,10 @@ def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
+    errors.validate_season(season)
+
     highest_streaks = records.highest_win_streaks(league, season)
-    io.output_table(
+    io.table(
         title=f"Highest Win Streaks in the {season} Premier League",
         headers=["Team", "Streak Length"],
         colors=["cyan", "magenta"],

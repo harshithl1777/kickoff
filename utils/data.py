@@ -10,8 +10,6 @@ import os
 import time
 import pandas as pd
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from rich.console import Console
-from python_ta.contracts import check_contracts
 
 from utils.constants import Constants
 from models.league import League
