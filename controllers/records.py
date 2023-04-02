@@ -29,7 +29,7 @@ def most_goals_scored(league: League, season: Optional[str] = None) -> list[tupl
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
-            if winner_goals > max_goals:
+            if winner_goals >= max_goals:
                 max_goals = winner_goals
                 final.insert(0, (team_name, winner_goals))
     return final[:4]
