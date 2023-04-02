@@ -84,6 +84,35 @@ def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tupl
     return sorted(streaks, key=lambda streak: streak[1], reverse=True)[:topx]
 
 
+def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[str, int, int, int]]:
+    """Return the top_x most improved teams in the given season in the league.
+    The most improved team is calculated based on a computation on the team's winrate throughout the season.
+
+    Each tuple in the returned list will be of the form 
+    (team name, worst winrate, final winrate, winrate improve)
+    where 
+    team name is the name of the team,
+    worst winrate is the lowest the team's winrate has been in the season*,
+    final winrate is the winrate of the team at the end of the season,
+    winrate improve is the difference between the final winrate and worst winrate
+
+    The returned value is a list of length top_x, where each element is sorted 
+    in descending order by winrate improve.
+
+    * worst winrate is calculated after ignoring the first 8 matches of the season.
+    This is done because the teams winrate in the first few matches will be skewed.
+    """
+    team_improvements = []
+    team_names = league.get_team_names(season)
+
+    for team_name in team_names:
+        team = league.get_team(team_name)
+        improvement_statistic = _calculate_improvement_statistic(team, season)
+        team_improvements.append(improvement_statistic)
+
+    return heapq.nlargest(team_improvements, key=lambda x: x[3])
+
+
 def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
     """Computed improvement statistic for the team in the specified season.
 
