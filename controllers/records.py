@@ -4,7 +4,9 @@ This module contains functionality for finding various records in the datasets.
 
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
-
+# pylint: disable=C0206
+# pylint: disable=C0200
+# pylint: disable=C0103
 from typing import Optional
 import heapq
 
@@ -32,8 +34,7 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         if season is None or match.season == season:
             if match.result is None:
                 winner_goals = match.details[match.home_team.name].full_time_goals
-                team_name = str(match.home_team.name) + \
-                    " & " + str(match.away_team.name)
+                team_name = str(match.home_team.name) + " & " + str(match.away_team.name)
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
@@ -44,14 +45,17 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
             goals.append((team_name, winner_goals))
     return sorted(goals, key=lambda goal: goal[1], reverse=True)[:topx]
 
+
 def most_fairplay(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, float]]:
-    """Return a list of the topx most fairplay teams in the league. A fairplay team is measured by the 
+    """Return a list of the topx most fairplay teams in the league. A fairplay team is measured by the
     least ratio of number of card offenses received and fouls commited to matches played. Consider season
     statistics if provided. Otherwise, consider stastics from all seasons.
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
-        - 0 < topx <= 20
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
     """
     matches = get_all_matches(league)
     team_offenses = {}
@@ -62,27 +66,27 @@ def most_fairplay(league: League, season: Optional[str] = None, topx: int = 4) -
             home_team = match.home_team.name
             away_team = match.away_team.name
 
-            yellows_h = match.details[home_team].yellow_cards 
-            reds_h  = match.details[home_team].red_cards * 2
+            yellows_h = match.details[home_team].yellow_cards
+            reds_h = match.details[home_team].red_cards * 2
             fouls_h = match.details[home_team].fouls
 
-            yellows_a = match.details[away_team].yellow_cards 
-            reds_a  = match.details[away_team].red_cards * 2
+            yellows_a = match.details[away_team].yellow_cards
+            reds_a = match.details[away_team].red_cards * 2
             fouls_a = match.details[away_team].fouls
 
             if home_team not in team_offenses:
                 team_offenses[home_team] = [(yellows_h + reds_h + fouls_h), 1]
-                
+
             else:
-                team_offenses[home_team][0] += (yellows_h + reds_h + fouls_h)
+                team_offenses[home_team][0] += yellows_h + reds_h + fouls_h
                 team_offenses[home_team][1] += 1
-            
+
             if away_team not in team_offenses:
                 team_offenses[away_team] = [(yellows_a + reds_a + fouls_a), 1]
             else:
-                team_offenses[away_team][0] += (yellows_a + reds_a + fouls_a)
+                team_offenses[away_team][0] += yellows_a + reds_a + fouls_a
                 team_offenses[away_team][1] += 1
-                    
+
     for team in team_offenses:
         fair_play_ratio = team_offenses[team][0] / team_offenses[team][1]
         tup = (team, round(fair_play_ratio, 2))
@@ -171,11 +175,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
 
-    return (team.name,
-            round(worst_winrate, 2),
-            round(final_winrate, 2),
-            round(final_winrate - worst_winrate, 2)
-            )
+    return (team.name, round(worst_winrate, 2), round(final_winrate, 2), round(final_winrate - worst_winrate, 2))
 
 
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
@@ -205,6 +205,7 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
 
 if __name__ == "__main__":
     import python_ta
+
     python_ta.check_all(
         config={
             "extra-imports": ["typing", "models.league"],
