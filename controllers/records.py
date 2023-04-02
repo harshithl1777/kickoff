@@ -78,15 +78,15 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     """Return the top_x most improved teams in the given season in the league.
     The most improved team is calculated based on a computation on the team's winrate throughout the season.
 
-    Each tuple in the returned list will be of the form 
+    Each tuple in the returned list will be of the form
     (team name, worst winrate, final winrate, winrate improve)
-    where 
+    where
     team name is the name of the team,
     worst winrate is the lowest the team's winrate has been in the season*,
     final winrate is the winrate of the team at the end of the season,
     winrate improve is the difference between the final winrate and worst winrate
 
-    The returned value is a list of length top_x, where each element is sorted 
+    The returned value is a list of length top_x, where each element is sorted
     in descending order by winrate improve.
 
     * worst winrate is calculated after ignoring the first 8 matches of the season.
@@ -119,7 +119,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
     SKEW_IGNORE = 8  # number of intial matches to ignore due to skew
     final_winrate = winrate_progression[-1]
     worst_winrate = float("inf")
-    for i in range(SKEW_IGNORE + 1, len(winrate_progression) - 1):
+    for i in range(SKEW_IGNORE, len(winrate_progression) - 1):
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
 
@@ -127,7 +127,8 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
             round(worst_winrate, 2),
             round(final_winrate, 2),
             round(final_winrate - worst_winrate, 2)
-    )
+            )
+
 
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
     """Return a list of the team's winrate after each match in the specified season.
@@ -152,3 +153,14 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
         winrate_progression.append(winrate)
 
     return winrate_progression
+
+
+if __name__ == "__main__":
+    import python_ta
+    python_ta.check_all(
+        config={
+            "extra-imports": ["typing", "models.league"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )
