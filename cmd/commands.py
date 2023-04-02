@@ -13,7 +13,7 @@ from typing import Optional
 import typer
 
 from utils import constants, data
-from controllers import basic, records
+from controllers import basic, records, optimization
 
 league = data.load_csv_files()
 constants = constants.Constants()
@@ -55,6 +55,7 @@ def streaks(
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - 0 < topx <= 20
     """
     errors.validate_season(season)
     errors.validate_topx(topx, 20)
@@ -80,6 +81,9 @@ def goals(
     Preconditions
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
     """
     if season is not None:
         errors.validate_season(season)
@@ -118,6 +122,36 @@ def improvement(
         colors=["cyan", "magenta", "cyan", "magenta"],
         data=most_improved,
         width=80
+    )
+
+
+@app.command()
+def optimalfouls(
+    team: str = typer.Option(default=None),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the optimal fouls for the provided team.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - 0 < topx <= 7
+    """
+    if team is not None:
+        errors.validate_team(league, team)
+    errors.validate_topx(topx, 7)
+    optimal_fouls = optimization.calculate_optimal_fouls(league, team, topx)
+
+    if team is None:
+        title = "Optimal Foul Ranges for all Premier League Teams"
+    else:
+        title = f"Optimal Foul Ranges for {team}"
+    io.table(
+        title=title,
+        headers=["Foul Range", "Number of Wins Recorded", "Percent of Total Decade Wins"],
+        colors=["cyan", "magenta", "green"],
+        data=optimal_fouls,
+        width=90,
     )
 
 
