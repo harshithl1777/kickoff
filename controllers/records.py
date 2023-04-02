@@ -4,10 +4,17 @@ This module contains functionality for finding various records in the datasets.
 
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
-# pylint: disable=C0200
 
 from typing import Optional
+import heapq
+
 from models.league import League
+from models.match import Match
+from models.team import Team
+from utils.constants import Constants
+
+
+constant = Constants()
 
 
 def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, int]]:
@@ -33,7 +40,8 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         if season is None or match.season == season:
             if match.result is None:
                 winner_goals = match.details[match.home_team.name].full_time_goals
-                team_name = str(match.home_team.name) + " & " + str(match.away_team.name)
+                team_name = str(match.home_team.name) + \
+                    " & " + str(match.away_team.name)
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
@@ -74,3 +82,28 @@ def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tupl
 
         streaks.append((name, highest_streak))
     return sorted(streaks, key=lambda streak: streak[1], reverse=True)[:topx]
+
+
+def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
+    """Return a list of the team's winrate after each match in the specified season.
+
+    The returned list will always be of length 38 - which is the number of matches
+    a team plays in a season of the Premier League
+
+    Preconditions:
+        - season in contants.retrieve("VALID_SEASONS")
+    """
+    matches_won = 0
+    matches_played = 0
+    winrate_progression = []
+
+    for match in team.matches:
+        if match.season != season:
+            continue
+        matches_played += 1
+        if match.result == team:
+            matches_won += 1
+        winrate = (matches_won / matches_won) * 100
+        winrate_progression.append(winrate)
+
+    return winrate_progression
