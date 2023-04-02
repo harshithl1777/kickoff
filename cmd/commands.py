@@ -45,6 +45,34 @@ def winrate(
 
     io.info(message=display_str, color="dodger_blue1")
 
+@app.command()
+def team_versus_league(
+    team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")
+) -> None:
+    """Outputs various team statistics compared to the overall league statistics for the specified season.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    errors.validate_team(league, team)
+    errors.validate_season(season)
+
+    data = [("Average Goals Scored", basic.get_team_goals_scored(league, team, season), basic.get_season_goals_scored(league, season)),
+            ("Average Shot Accuracy", basic.get_team_shot_accuracy(league, team, season), basic.get_season_shot_accuracy(league, season)),
+            ("Average Fouls Committed", basic.get_team_fouls(league, team, season), basic.get_season_fouls(league, season)),
+            ("Average Card Offenses", basic.get_team_cards(league, team, season), basic.get_season_cards(league, season)) 
+            ]
+
+
+    title = f"{team} Statistics Compared to the Rest of he League in the {season} Premier League Season"
+    io.table(
+        title=title,
+        headers=["Statistic", f"{team}", "League"],
+        colors=["cyan", "magenta"],
+        data=data,
+        width=70,
+    )
+
 
 @app.command()
 def streaks(
@@ -115,7 +143,7 @@ def improvement(
     errors.validate_topx(topx, 20)
 
     most_improved = records.most_improved_teams(league, season, topx)
-    title = f"Most Improved Teams in the {season} Premier League"
+    title = f"Most Improved Teams in the {season} Premier League Season"
     io.table(
         title=title,
         headers=["Team", "Lowest Win (%)", "Final Winrate (%)", "Winrate Improvement (%)"],
