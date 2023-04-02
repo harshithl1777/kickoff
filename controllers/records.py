@@ -9,7 +9,6 @@ from typing import Optional
 import heapq
 
 from models.league import League
-from models.match import Match
 from models.team import Team
 from utils.constants import Constants
 
