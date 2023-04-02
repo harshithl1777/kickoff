@@ -84,6 +84,28 @@ def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tupl
     return sorted(streaks, key=lambda streak: streak[1], reverse=True)[:topx]
 
 
+def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
+    """Computed improvement statistic for the team in the specified season.
+
+    Return a tuple of the form (team name, worst winrate, final winrate, winrate improve)
+
+    The improvement statistic is calculated based on the computation described in most_improved_team
+
+    Preconditions:
+        - season in contants.retrieve("VALID_SEASONS")
+    """
+    winrate_progression = _calculate_winrate_progression(team, season)
+
+    SKEW_IGNORE = 8  # number of intial matches to ignore due to skew
+    final_winrate = winrate_progression[-1]
+    worst_winrate = float("-inf")
+    for i in range(SKEW_IGNORE + 1, len(winrate_progression) - 1):
+        if winrate_progression[i] < worst_winrate:
+            worst_winrate = winrate_progression[i]
+
+    return team.name, worst_winrate, final_winrate, final_winrate - worst_winrate
+
+
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
     """Return a list of the team's winrate after each match in the specified season.
 
