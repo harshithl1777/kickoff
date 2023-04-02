@@ -102,6 +102,7 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     * worst winrate is calculated after ignoring the first 8 matches of the season.
     This is done because the teams winrate in the first few matches will be skewed.
     """
+    print(1)
     team_improvements = []
     team_names = league.get_team_names(season)
 
@@ -127,6 +128,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
 
     SKEW_IGNORE = 8  # number of intial matches to ignore due to skew
     final_winrate = winrate_progression[-1]
+    print("here")
     worst_winrate = float("-inf")
     for i in range(SKEW_IGNORE + 1, len(winrate_progression) - 1):
         if winrate_progression[i] < worst_winrate:
@@ -154,7 +156,7 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
         matches_played += 1
         if match.result == team:
             matches_won += 1
-        winrate = (matches_won / matches_won) * 100
+        winrate = (matches_won / matches_played) * 100
         winrate_progression.append(winrate)
 
     return winrate_progression
