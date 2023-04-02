@@ -7,8 +7,6 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 """
 
 from cmd.commands import app
-from utils.data import load_csv_files
 
 if __name__ == "__main__":
-    load_csv_files()
     app()
