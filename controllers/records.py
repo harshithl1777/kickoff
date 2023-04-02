@@ -111,7 +111,7 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
         improvement_statistic = _calculate_improvement_statistic(team, season)
         team_improvements.append(improvement_statistic)
 
-    return heapq.nlargest(team_improvements, key=lambda x: x[3])
+    return heapq.nlargest(top_x, team_improvements, key=lambda x: x[3])
 
 
 def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
@@ -159,4 +159,5 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
         winrate = (matches_won / matches_played) * 100
         winrate_progression.append(winrate)
 
+    print(len(winrate_progression))
     return winrate_progression
