@@ -73,12 +73,13 @@ def get_team_shot_accuracy(league: League, team_name: str, season: Optional[str]
     for match in team.matches:
         if season is not None and match.season != season:
             continue
-        total_matches += 1
-
         shots = match.details[team_name].shots
-        shots_target = match.details[team_name].shots_on_target
-        accuracy += (shots / shots_target)
-
+        if shots==0:
+            continue
+        total_matches += 1
+        shots_target = match.details[team_name].shots_on_target     
+        accuracy += (shots_target/shots)
+        
     return (accuracy / total_matches) * 100
 
 
