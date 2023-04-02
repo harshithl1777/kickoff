@@ -18,10 +18,15 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         - 0 < topx <= 20
     """
     matches = []
+    season_orders = set()
     teams = league.get_team_names()
     for team in teams:
-        matches.extend(league.get_team(team).matches)
-
+        team_matches = league.get_team(team).matches
+        for match in team_matches:
+            identifier = str(match.order) + match.season
+            if identifier not in season_orders:
+                matches.append(match)
+                season_orders.add(identifier)
     goals = []
 
     for match in matches:
