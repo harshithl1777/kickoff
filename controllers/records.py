@@ -6,12 +6,13 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 """
 # pylint: disable=C0200
 
-from models.league import League
 from typing import Optional
+from models.league import League
+
 
 def most_goals_scored(league: League, season: Optional[str] = None) -> list[tuple[str, int]]:
     """Return a list of the teams that scored the most goals in the whole league"""
-    
+
     matches = []
     teams = league.get_team_names()
     for team in teams:
@@ -24,13 +25,16 @@ def most_goals_scored(league: League, season: Optional[str] = None) -> list[tupl
         if season is None or match.season == season:
             if match.result is None:
                 winner_goals = match.details[match.home_team.name].full_time_goals
+                team_name = match.home_team.name + " & " + match.away_team.name
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
+                team_name = match.result.name
             if winner_goals >= max_goals:
                 max_goals = winner_goals
-                final.insert(((match.result.name, winner_goals)), 0)
+                final.insert(0, (team_name, winner_goals))
     return final[:4]
-        
+
+
 def highest_win_streaks(league: League, season: str) -> list[tuple[str, int]]:
     """Return a dictionary of the highest win streaks in the specified season
 
