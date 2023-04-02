@@ -71,20 +71,18 @@ def most_fairplay(league: League, season: Optional[str] = None, topx: int = 4) -
             fouls_a = match.details[away_team].fouls
 
             if home_team not in team_offenses:
-                team_offenses[home_team][0] = (yellows_h + reds_h + fouls_h)
-                team_offenses[home_team][1] = 1
+                team_offenses[home_team] = ((yellows_h + reds_h + fouls_h), 1)
+                
             else:
                 team_offenses[home_team][0] += (yellows_h + reds_h + fouls_h)
                 team_offenses[home_team][1] += 1
             
             if away_team not in team_offenses:
-                team_offenses[away_team][0] = (yellows_a + reds_a + fouls_a)
-                team_offenses[away_team][1] = 1
+                team_offenses[away_team] = ((yellows_a + reds_a + fouls_a), 1)
             else:
                 team_offenses[away_team][0] += (yellows_a + reds_a + fouls_a)
                 team_offenses[away_team][1] += 1
-            print(team_offenses)
-    
+                    
     for team in team_offenses:
         fair_play_ratio = team_offenses[team][0] / team_offenses[team][1]
         tup = (team, round(fair_play_ratio, 2))
