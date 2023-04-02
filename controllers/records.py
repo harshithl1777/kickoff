@@ -10,16 +10,19 @@ from typing import Optional
 from models.league import League
 
 
-def most_goals_scored(league: League, season: Optional[str] = None) -> list[tuple[str, int]]:
-    """Return a list of the teams that scored the most goals in the whole league"""
+def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, int]]:
+    """Return a list of the topx teams that scored the most goals in the whole league
 
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - 0 < topx <= 20
+    """
     matches = []
     teams = league.get_team_names()
     for team in teams:
         matches.extend(league.get_team(team).matches)
 
-    max_goals = 0
-    final = []
+    goals = []
 
     for match in matches:
         if season is None or match.season == season:
@@ -29,17 +32,22 @@ def most_goals_scored(league: League, season: Optional[str] = None) -> list[tupl
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
-            if winner_goals >= max_goals:
-                max_goals = winner_goals
-                final.insert(0, (team_name, winner_goals))
-    return final[:4]
+
+            if season is None:
+                team_name += f" ({match.season})"
+
+            goals.append((team_name, winner_goals))
+    return sorted(goals, key=lambda goal: goal[1], reverse=True)[:topx]
 
 
-def highest_win_streaks(league: League, season: str) -> list[tuple[str, int]]:
-    """Return a dictionary of the highest win streaks in the specified season
+def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tuple[str, int]]:
+    """Return a list of the topx highest win streaks in the specified season
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
     """
     team_names = league.get_team_names(season)
     streaks = []
@@ -60,4 +68,4 @@ def highest_win_streaks(league: League, season: str) -> list[tuple[str, int]]:
                     current_streak = 0
 
         streaks.append((name, highest_streak))
-    return sorted(streaks, key=lambda streak: streak[1], reverse=True)[:4]
+    return sorted(streaks, key=lambda streak: streak[1], reverse=True)[:topx]

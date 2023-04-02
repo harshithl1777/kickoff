@@ -33,8 +33,9 @@ def winrate(
         - If season is specified, team must have played a match in the season
     """
     errors.validate_team(league, team)
-    errors.validate_season(season)
-    errors.validate_team_in_season(league, team, season)
+    if season is not None:
+        errors.validate_season(season)
+        errors.validate_team_in_season(league, team, season)
     winrate_percent = round(basic.overall_winrate(league, team, season), 2)
 
     if season is None:
@@ -46,15 +47,19 @@ def winrate(
 
 
 @app.command()
-def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
+def streaks(
+    season: str = typer.Option(..., help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
     """Outputs the longest win streaks statistic for the specified season.
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
     errors.validate_season(season)
+    errors.validate_topx(topx, 20)
 
-    highest_streaks = records.highest_win_streaks(league, season)
+    highest_streaks = records.highest_win_streaks(league, season, topx)
     io.table(
         title=f"Highest Win Streaks in the {season} Premier League",
         headers=["Team", "Streak Length"],
@@ -65,7 +70,10 @@ def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
 
 
 @app.command()
-def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
+def goals(
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
     """Outputs the winrate statistic for the specified team & season.
     If no arguments are found, the statistic will be calculated for all teams and seasons.
 
@@ -73,7 +81,13 @@ def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    most_goals = records.most_goals_scored(league, season)
+    if season is not None:
+        errors.validate_season(season)
+        errors.validate_topx(topx, 20)
+    else:
+        errors.validate_topx(topx, 100)
+
+    most_goals = records.most_goals_scored(league, season, topx)
     if season is None:
         title = "Most Goals Scored in the Premier League"
     else:

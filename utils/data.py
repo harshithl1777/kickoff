@@ -80,22 +80,22 @@ def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> No
         home_team_details = MatchDetails(
             team=home_team,
             fouls=dataframe["HF"][i],
-            shots=dataframe["HS"][i],
-            shots_on_target=dataframe["HST"][i],
-            red_cards=dataframe["HR"][i],
-            yellow_cards=dataframe["HY"][i],
-            half_time_goals=dataframe["HTHG"][i],
-            full_time_goals=dataframe["FTHG"][i],
+            shots=int(dataframe["HS"][i]),
+            shots_on_target=int(dataframe["HST"][i]),
+            red_cards=int(dataframe["HR"][i]),
+            yellow_cards=int(dataframe["HY"][i]),
+            half_time_goals=int(dataframe["HTHG"][i]),
+            full_time_goals=int(dataframe["FTHG"][i]),
         )
         away_team_details = MatchDetails(
             team=away_team,
             fouls=dataframe["AF"][i],
-            shots=dataframe["AS"][i],
-            shots_on_target=dataframe["AST"][i],
-            red_cards=dataframe["AR"][i],
-            yellow_cards=dataframe["AY"][i],
-            half_time_goals=dataframe["HTAG"][i],
-            full_time_goals=dataframe["FTAG"][i],
+            shots=int(dataframe["AS"][i]),
+            shots_on_target=int(dataframe["AST"][i]),
+            red_cards=int(dataframe["AR"][i]),
+            yellow_cards=int(dataframe["AY"][i]),
+            half_time_goals=int(dataframe["HTAG"][i]),
+            full_time_goals=int(dataframe["FTAG"][i]),
         )
 
         if dataframe["FTR"][i] == "H":
