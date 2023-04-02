@@ -97,6 +97,30 @@ def goals(
     )
 
 
+@app.command()
+def improvement(
+    season: str = typer.Option(..., help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Output the topx most improved teams in the season.
+
+    Preconditions
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    errors.validate_season(season)
+    errors.validate_topx(topx, 20)
+
+    most_improved = records.most_improved_teams(league, season, topx)
+    title = f"Most Improved Teams in the {season} Premier League"
+    io.table(
+        title=title,
+        headers=["Team", "Lowest Winrate", "Final Winrate", "Winrate Improvement"],
+        colors=["cyan", "magenta", "cyan", "magenta"],
+        data=most_improved,
+        width=70
+    )
+
+
 if __name__ == "__main__":
     import python_ta
 
