@@ -8,6 +8,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 
 from typing import Optional
 from models.league import League
+from utils.league import get_all_matches
 
 
 def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, int]]:
@@ -17,16 +18,7 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - 0 < topx <= 20
     """
-    matches = []
-    season_orders = set()
-    teams = league.get_team_names()
-    for team in teams:
-        team_matches = league.get_team(team).matches
-        for match in team_matches:
-            identifier = str(match.order) + match.season
-            if identifier not in season_orders:
-                matches.append(match)
-                season_orders.add(identifier)
+    matches = get_all_matches(league)
     goals = []
 
     for match in matches:
@@ -74,3 +66,15 @@ def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tupl
 
         streaks.append((name, highest_streak))
     return sorted(streaks, key=lambda streak: streak[1], reverse=True)[:topx]
+
+
+if __name__ == "__main__":
+    import python_ta
+
+    python_ta.check_all(
+        config={
+            "extra-imports": ["typing", "models.league"],
+            "allowed-io": [],
+            "max-line-length": 120,
+        }
+    )
