@@ -132,7 +132,7 @@ def fairplay(
     season: str = typer.Option(default=None, help="ex. 2009-10"),
     topx: int = typer.Option(default=4, help="Enter the top x values to output"),
 ) -> None:
-    """Outputs the topx most fairplay for the specified season.
+    """Outputs the topx most fairplay teams for the specified season.
     If no arguments are found, the statistic will be calculated for all teams and seasons.
 
     Preconditions
