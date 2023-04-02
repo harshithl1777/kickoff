@@ -10,8 +10,6 @@ import os
 import time
 import pandas as pd
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from rich.console import Console
-from python_ta.contracts import check_contracts
 
 from utils.constants import Constants
 from models.league import League
@@ -39,9 +37,7 @@ def load_csv_files() -> League:
 
         time.sleep(0.5)
 
-    console = Console()
-    console.line()
-    console.print("Graph initialization complete!", style="green")
+    return league
 
 
 # @check_contracts

@@ -7,50 +7,61 @@ to other functions / classes.
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
 
-import typer
-from utils.constants import Constants
-from controllers import basic, records
-from controllers.records import most_goals_scored
+import cmd.output as io
+import cmd.errors as errors
 from typing import Optional
-from rich.console import Console
+import typer
 
 from utils import constants, data
+from controllers import basic, records
 
 league = data.load_csv_files()
 constants = constants.Constants()
-
-constants = Constants()
 app = typer.Typer(help=constants.retrieve("HELP_COMMAND_INTRO"))
 
 
 @app.command()
-def winrate(team: str = typer.Option(default="ALL"), season: str = typer.Option(default="ALL", help="ex. 2009-10")) -> None:
-    """Outputs the winrate statistic for the specified team & season.
-    If no arguments are found, the statistic will be calculated for all teams and seasons.
+def winrate(
+    team: str = typer.Option(...), season: Optional[str] = typer.Option(default=None, help="ex. 2009-10")
+) -> None:
+    """Outputs the winrate percent of the specified team.
+    If season is specified, the winrate will be calculated only for the season.
 
     Preconditions
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - If season is specified, team must have played a match in the season
     """
-    console = Console()
-    winrate = round(basic.overall_winrate(league, team, season), 2)
+    errors.validate_team(league, team)
+    errors.validate_season(season)
+    errors.validate_team_in_season(league, team, season)
+    winrate_percent = round(basic.overall_winrate(league, team, season), 2)
 
     if season is None:
-        display_str = f"{team}'s winrate across all Premier League seasons is {winrate}%"
+        display_str = f"{team}'s winrate across all Premier League seasons is {winrate_percent}%."
     else:
-        display_str = f"{team}'s winrate in the {season} season is {winrate}%"
+        display_str = f"{team}'s winrate in the {season} season is {winrate_percent}%."
 
-    console.print(display_str, style="blue")
+    io.info(message=display_str, color="dodger_blue1")
 
 
 @app.command()
 def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
-    """Outputs the longest win & loss streaks statistic for the specified season.
+    """Outputs the longest win streaks statistic for the specified season.
 
-    Preconditions
+    Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    raise NotImplementedError
+    errors.validate_season(season)
+
+    highest_streaks = records.highest_win_streaks(league, season)
+    io.table(
+        title=f"Highest Win Streaks in the {season} Premier League",
+        headers=["Team", "Streak Length"],
+        colors=["cyan", "magenta"],
+        data=highest_streaks,
+        width=70,
+    )
 
 @app.command()
 def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
