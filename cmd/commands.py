@@ -64,6 +64,25 @@ def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
     )
 
 
+@app.command()
+def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
+    """Outputs the winrate statistic for the specified team & season.
+    If no arguments are found, the statistic will be calculated for all teams and seasons.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    most_goals = records.most_goals_scored(league, season)
+    if season is None:
+        title = "Most Goals Scored in the Premier League"
+    else:
+        title = f"Most Goals Scored in the {season} Premier League"
+    io.table(
+        title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=70
+    )
+
+
 if __name__ == "__main__":
     import python_ta
 

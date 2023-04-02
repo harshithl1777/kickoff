@@ -21,8 +21,8 @@ def load_csv_files() -> League:
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task(description="Retrieving datasets...", total=None)
 
-        files = os.listdir("./assets")
-        file_paths = ["./assets/" + file for file in files if "csv" in file]
+        files = [file for file in os.listdir("./assets") if "csv" in file]
+        file_paths = ["./assets/" + file for file in files]
         time.sleep(0.5)
 
         progress.add_task(description="Parsing data...", total=None)
