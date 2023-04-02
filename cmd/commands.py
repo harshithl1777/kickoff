@@ -97,6 +97,10 @@ def goals(
     )
 
 
+# @app.command()
+# def optimal_fouls(team: )
+
+
 if __name__ == "__main__":
     import python_ta
 
