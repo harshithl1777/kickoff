@@ -71,6 +71,34 @@ def teamvsleague(
         data=data,
         width=70,
     )
+@app.command()
+def hva(
+        season: str = typer.Option(default=None, help="ex. 2009-10"),
+        team: str = typer.Option(default=None, help="ex. Arsenal")
+) -> None:
+    """Outputs the highest value added statistic for the specified season.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    errors.validate_season(season)
+    if team is not None:
+        errors.validate_team(league, team)
+
+    home_vs_away = basic.home_vs_away(league, team, season)
+    if team is None and season is None:
+        title = f"Home vs Away Winrate in the Premier League"
+    elif team is None and season is not None:
+        title = f"Home vs Away Winrate in the {season} Premier League"
+    else:
+        title = f"Home vs Awat in the {season} Premier League for {team}"
+    io.table(
+        title=title,
+        headers=["Home Win Rate", "Away Win Rate", "Draw Rate"],
+        colors=["cyan", "magenta", "cyan"],
+        data=home_vs_away,
+        width=70,
+    )
 
 
 @app.command()
