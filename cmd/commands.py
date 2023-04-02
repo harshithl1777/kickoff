@@ -114,10 +114,10 @@ def improvement(
     title = f"Most Improved Teams in the {season} Premier League"
     io.table(
         title=title,
-        headers=["Team", "Lowest Winrate", "Final Winrate", "Winrate Improvement"],
+        headers=["Team", "Lowest Win (%)", "Final Winrate (%)", "Winrate Improvement (%)"],
         colors=["cyan", "magenta", "cyan", "magenta"],
         data=most_improved,
-        width=70
+        width=80
     )
 
 
