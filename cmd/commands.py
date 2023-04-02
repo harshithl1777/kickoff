@@ -68,35 +68,42 @@ def teamvsleague(team: str = typer.Option(...), season: str = typer.Option(..., 
         io.newline()
         progress.add_task("Compiling results...")
 
+        updated_data = []
         average_data = [
-            (
+            [
                 "Average Goals Scored / Game",
                 round(basic.get_team_goals_scored(league, team, season), 2),
                 round(basic.get_season_goals_scored(league, season), 2),
-            ),
-            (
+            ],
+            [
                 "Average Shot Accuracy (%)",
                 round(basic.get_team_shot_accuracy(league, team, season), 2),
                 round(basic.get_season_shot_accuracy(league, season), 2),
-            ),
-            (
+            ],
+            [
                 "Average Fouls Committed / Game",
                 round(basic.get_team_fouls(league, team, season), 2),
                 round(basic.get_season_fouls(league, season), 2),
-            ),
-            (
+            ],
+            [
                 "Average Card Offenses / Game",
                 round(basic.get_team_cards(league, team, season), 2),
                 round(basic.get_season_cards(league, season), 2),
-            ),
+            ],
         ]
+
+        for row in average_data:
+            if row[1] - row[2] > 0:
+                updated_data.append((row[0], row[1], row[2], f"+{round(row[1] - row[2], 2)}"))
+            else:
+                updated_data.append((row[0], row[1], row[2], round(row[1] - row[2], 2)))
 
         title = f"{team} Statistics Compared to League Averages in the {season} Premier League Season"
     io.table(
         title=title,
-        headers=["Statistic", f"{team}", "League"],
-        colors=["cyan", "magenta", "cyan"],
-        data=average_data,
+        headers=["Statistic", f"{team}", "League", "Difference"],
+        colors=["cyan", "magenta", "cyan", "magenta"],
+        data=updated_data,
         width=100,
     )
 
