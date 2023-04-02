@@ -58,7 +58,7 @@ def teamvsleague(
     errors.validate_season(season)
 
     data = [("Average Goals Scored", round(basic.get_team_goals_scored(league, team, season), 2), round(basic.get_season_goals_scored(league, season), 2)),
-            ("Average Shot Accuracy", round(basic.get_team_shot_accuracy(league, team, season), 2), round(basic.get_season_shot_accuracy(league, season), 2)),
+            ("Average Shot Accuracy (%)", round(basic.get_team_shot_accuracy(league, team, season), 2), round(basic.get_season_shot_accuracy(league, season), 2)),
             ("Average Fouls Committed", round(basic.get_team_fouls(league, team, season), 2), round(basic.get_season_fouls(league, season), 2)),
             ("Average Card Offenses", round(basic.get_team_cards(league, team, season), 2), round(basic.get_season_cards(league, season), 2)) 
             ]
