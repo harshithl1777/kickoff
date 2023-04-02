@@ -72,13 +72,13 @@ def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    console = Console()
-    most_goals = most_goals_scored(league, season)
-
-
-    display_str = f"most goals across all Premier League seasons is {most_goals}%"
-
-    console.print(display_str, style="blue")
+    most_goals = records.most_goals_scored(league, season)
+    if season is None:
+        title = "Most Goals Scored in the Premier League"
+    else:
+        title = f"Most Goals Scored in the {season} Premier League"
+    print(most_goals)
+    io.table(title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=70)
 
 if __name__ == "__main__":
     import python_ta

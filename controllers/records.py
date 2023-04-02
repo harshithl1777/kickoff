@@ -13,34 +13,23 @@ def most_goals_scored(league: League, season: Optional[str] = None) -> list[tupl
     """Return a list of the teams that scored the most goals in the whole league"""
     
     matches = []
+    teams = league.get_team_names()
+    for team in teams:
+        matches.extend(league.get_team(team).matches)
 
-    for val in league._teams:
-        matches.append(league._teams[val].matches)ß
+    max_goals = 0
+    final = []
 
-    if season is None:
-        max_goals = 0
-        final = []
-
-        for match in matches:
-            if match.full_time_goals >= max_goals:
-                final.insert(((match.team.name, match.full_time_goals)), 0)
-            
-            max_goals += 1
-        
-        return final[:4]
-   
-    else:
-        max_goals = 0
-        final = []
-
-        for match in matches:
-            if match.season == season:
-                if match.full_time_goals >= max_goals:
-                    final.insert(((match.team.name, match.full_time_goals)), 0)
-                
-                max_goals += 1
-            
-            return final[:4]
+    for match in matches:
+        if season is None or match.season == season:
+            if match.result is None:
+                winner_goals = match.details[match.home_team.name].full_time_goals
+            else:
+                winner_goals = match.details[match.result.name].full_time_goals
+            if winner_goals >= max_goals:
+                max_goals = winner_goals
+                final.insert(((match.result.name, winner_goals)), 0)
+    return final[:4]
         
 def highest_win_streaks(league: League, season: str) -> list[tuple[str, int]]:
     """Return a dictionary of the highest win streaks in the specified season
