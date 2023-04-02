@@ -63,6 +63,7 @@ def streaks(season: str = typer.Option(..., help="ex. 2009-10")) -> None:
         width=70,
     )
 
+
 @app.command()
 def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
     """Outputs the winrate statistic for the specified team & season.
@@ -77,8 +78,10 @@ def goals(season: str = typer.Option(default=None, help="ex. 2009-10")) -> None:
         title = "Most Goals Scored in the Premier League"
     else:
         title = f"Most Goals Scored in the {season} Premier League"
-    print(most_goals)
-    io.table(title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=70)
+    io.table(
+        title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=70
+    )
+
 
 if __name__ == "__main__":
     import python_ta
