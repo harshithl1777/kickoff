@@ -128,8 +128,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
 
     SKEW_IGNORE = 8  # number of intial matches to ignore due to skew
     final_winrate = winrate_progression[-1]
-    print("here")
-    worst_winrate = float("-inf")
+    worst_winrate = float("inf")
     for i in range(SKEW_IGNORE + 1, len(winrate_progression) - 1):
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
@@ -140,8 +139,8 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
     """Return a list of the team's winrate after each match in the specified season.
 
-    The returned list will always be of length 38 - which is the number of matches
-    a team plays in a season of the Premier League
+    The returned list will always be of length 38 - which is the total number of matches
+    a team plays in a season of the Premier League.
 
     Preconditions:
         - season in contants.retrieve("VALID_SEASONS")
@@ -159,5 +158,4 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
         winrate = (matches_won / matches_played) * 100
         winrate_progression.append(winrate)
 
-    print(len(winrate_progression))
     return winrate_progression
