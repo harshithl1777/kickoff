@@ -21,7 +21,9 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
-        - 0 < topx <= 20
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
     """
     matches = get_all_matches(league)
     goals = []
@@ -41,6 +43,54 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
 
             goals.append((team_name, winner_goals))
     return sorted(goals, key=lambda goal: goal[1], reverse=True)[:topx]
+
+def most_fairplay(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, float]]:
+    """Return a list of the topx most fairplay teams in the league. A fairplay team is measured by the 
+    least ratio of number of card offenses received and fouls commited to matches played. Consider season
+    statistics if provided. Otherwise, consider stastics from all seasons.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - 0 < topx <= 20
+    """
+    matches = get_all_matches(league)
+    team_offenses = {}
+    offenses = []
+
+    for match in matches:
+        if season is None or match.season == season:
+            home_team = match.home_team.name
+            away_team = match.away_team.name
+
+            yellows_h = match.details[home_team].yellow_cards 
+            reds_h  = match.details[home_team].red_cards * 2
+            fouls_h = match.details[home_team].fouls
+
+            yellows_a = match.details[away_team].yellow_cards 
+            reds_a  = match.details[away_team].red_cards * 2
+            fouls_a = match.details[away_team].fouls
+
+            if home_team not in team_offenses:
+                team_offenses[home_team][0] = (yellows_h + reds_h + fouls_h)
+                team_offenses[home_team][1] = 1
+            else:
+                team_offenses[home_team][0] += (yellows_h + reds_h + fouls_h)
+                team_offenses[home_team][1] += 1
+            
+            if away_team not in team_offenses:
+                team_offenses[away_team][0] = (yellows_a + reds_a + fouls_a)
+                team_offenses[away_team][1] = 1
+            else:
+                team_offenses[away_team][0] += (yellows_a + reds_a + fouls_a)
+                team_offenses[away_team][1] += 1
+            print(team_offenses)
+    
+    for team in team_offenses:
+        fair_play_ratio = team_offenses[team][0] / team_offenses[team][1]
+        tup = (team, round(fair_play_ratio, 2))
+        offenses.append(tup)
+
+    return sorted(offenses, key=lambda fairplay: fairplay[1])[:topx]
 
 
 def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tuple[str, int]]:

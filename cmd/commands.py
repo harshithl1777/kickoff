@@ -122,10 +122,47 @@ def goals(
     if season is None:
         title = "Most Goals Scored in the Premier League"
     else:
-        title = f"Most Goals Scored in the {season} Premier League"
+        title = f"Most Goals Scored in the {season} Premier League Season"
     io.table(
         title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=70
     )
+
+@app.command()
+def fairplay(
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the topx most fairplay for the specified season.
+    If no arguments are found, the statistic will be calculated for all teams and seasons.
+
+    Preconditions
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19 or season is None
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
+    """
+    if season is not None:
+        errors.validate_season(season)
+        errors.validate_topx(topx, 20)
+    else:
+        errors.validate_topx(topx, 100)
+    
+
+    most_fairplay = records.most_fairplay(league, season, topx)
+
+    if season is None:
+        title = "Most Fairplay Teams in the Premier League"
+    else:
+        title = f"Most fairplay teams in the {season} Premier League Season"
+
+    io.table(
+        title=title,
+        headers=["Team","Fairplay Ratio (Card Offenses + Fouls Comitted : Matches Played)"],
+        colors=["cyan", "magenta"],
+        data=most_fairplay,
+        width=70
+    )
+    
 
 
 @app.command()
