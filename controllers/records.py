@@ -103,6 +103,60 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     return heapq.nlargest(top_x, team_improvements, key=lambda x: x[3])
 
 
+def most_clutch_team(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, int, int]]:
+    """Return a list of the most clutch teams in the specified season
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    matches = get_all_matches(league)
+    clutch = []
+    max_clutch = 0
+
+    print(len(matches))
+
+    for match in matches:
+        if season is None or match.season == season:
+            if match.result is None:
+                name = str(match.home_team.name) + " & " + str(match.away_team.name)
+                if season is None:
+                    name += f" ({match.season})"
+                clutch.append((name, "0 - 0", "0 - 0", 0))
+            else:
+                name = match.result.name
+                
+                home_points_half = int(match.details[match.home_team.name].half_time_goals)
+                away_points_half = int(match.details[match.away_team.name].half_time_goals)
+                
+                home_points_full = int(match.details[match.home_team.name].full_time_goals)
+                away_points_full = int(match.details[match.away_team.name].full_time_goals)
+
+                home_points_half_total = home_points_half - away_points_half
+                away_points_half_total = away_points_half - home_points_half
+
+                home_points_full_total = home_points_full - away_points_full
+                away_points_full_total = away_points_full - home_points_full
+
+                home_total = home_points_full_total - home_points_half_total
+                away_total = away_points_full_total - away_points_half_total
+            
+            if season is None:
+                name += f" ({match.season})"
+            
+            if max_clutch < home_total and max_clutch < away_total and home_total == away_total:
+                max_clutch = home_total
+                clutch.append((str(match.home_team.name) + " & " + str(match.away_team.name), int(home_points_half_total), int(home_points_full_total), int(home_total)))
+            
+            if max_clutch < home_total and home_total > away_total and home_points_half < away_points_half and home_points_full > away_points_full:
+                max_clutch = home_total
+                clutch.append((name, f"{abs(home_points_half)} - {abs(away_points_half)}", f"{abs(home_points_full)} - {abs(away_points_full)}", home_total))
+            elif max_clutch < away_total and away_total > home_total and away_points_half < home_points_half and away_points_full > home_points_full:
+                max_clutch = away_total
+                clutch.append((name, f"{abs(home_points_half)} - {abs(away_points_half)}", f"{abs(home_points_full)} - {abs(away_points_full)}", away_total))
+    
+    return sorted(clutch, key=lambda clutch: clutch[3], reverse=True)[:topx]
+
+
 def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
     """Computed improvement statistic for the team in the specified season.
 

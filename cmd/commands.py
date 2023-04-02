@@ -96,6 +96,33 @@ def streaks(
         width=70,
     )
 
+@app.command()
+def clutch(    
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+    ) -> None:
+    """Outputs the winrate statistic for the specified team & season.
+    If no arguments are found, the statistic will be calculated for all teams and seasons.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    most_clutch = records.most_clutch_team(league, season)
+    
+    if season is None:
+        errors.validate_topx(topx, 100)
+        title = "Most clutch teams in the Premier League"
+    else:
+        errors.validate_season(season)
+        errors.validate_topx(topx, 20)
+        title = f"Most clutch teams in the {season} Premier League Season"
+
+    
+    io.table(
+        title=title, headers=["Team", "Half-Time Goals Score", "Full-Time Goals Score", "Final Score"], colors=["cyan", "magenta", 'cyan', 'magenta'], data=most_clutch, width=70
+    )
+
 
 @app.command()
 def goals(
