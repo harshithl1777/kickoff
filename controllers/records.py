@@ -102,7 +102,6 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     * worst winrate is calculated after ignoring the first 8 matches of the season.
     This is done because the teams winrate in the first few matches will be skewed.
     """
-    print(1)
     team_improvements = []
     team_names = league.get_team_names(season)
 
