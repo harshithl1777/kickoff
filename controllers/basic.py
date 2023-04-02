@@ -4,7 +4,6 @@ This module contains functionality for performing basic analysis on the premier 
 
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
-
 from typing import Optional
 
 from models.league import League
