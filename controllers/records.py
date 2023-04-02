@@ -119,7 +119,8 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
 
     Return a tuple of the form (team name, worst winrate, final winrate, winrate improve)
 
-    The improvement statistic is calculated based on the computation described in most_improved_team
+    The improvement statistic is calculated based on the computation described in most_improved_team.
+    worst winrate, final winrate, and winrate improve are rounded to two decimal places
 
     Preconditions:
         - season in contants.retrieve("VALID_SEASONS")
@@ -133,8 +134,11 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
 
-    return team.name, worst_winrate, final_winrate, final_winrate - worst_winrate
-
+    return (team.name,
+            round(worst_winrate, 2),
+            round(final_winrate, 2),
+            round(final_winrate - worst_winrate, 2)
+    )
 
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
     """Return a list of the team's winrate after each match in the specified season.
