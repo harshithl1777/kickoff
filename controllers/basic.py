@@ -41,7 +41,7 @@ def get_team_goals_scored(league: League, team_name: str, season: Optional[str] 
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     goals_scored = 0
@@ -64,7 +64,7 @@ def get_team_shot_accuracy(league: League, team_name: str, season: Optional[str]
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     accuracy = 0
@@ -90,7 +90,7 @@ def get_team_fouls(league: League, team_name: str, season: Optional[str] = None)
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in league._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     fouls = 0
@@ -114,7 +114,7 @@ def get_team_cards(league: League, team_name: str, season: Optional[str] = None)
         - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
         '2017-18', '2018-19']
         - team_name in self._teams
-        - If the season if provided, the team took part in that season
+        - If the season is provided, the team took part in that season
     """
     total_matches = 0
     cards = 0

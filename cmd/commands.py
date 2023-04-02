@@ -64,7 +64,7 @@ def team_versus_league(
             ]
 
 
-    title = f"{team} Statistics Compared to the Rest of he League in the {season} Premier League Season"
+    title = f"{team} Statistics Compared to the Rest of the League in the {season} Premier League Season"
     io.table(
         title=title,
         headers=["Statistic", f"{team}", "League"],
