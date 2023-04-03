@@ -38,6 +38,8 @@ def table(title: str, headers: list[str], colors: list[str], data: list[tuple[An
         - len({len(headers), len(colors), len(data[0])}) == 1
         - len({len(row) for row in data}) == 1
     """
+    if len(data) == 0:
+        error("No data found for the given input.")
     title_style = Style(bold=True)
     output_table = Table(title=title, width=width, box=box.HORIZONTALS, show_footer=False, title_style=title_style)
 

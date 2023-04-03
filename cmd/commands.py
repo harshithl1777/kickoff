@@ -115,17 +115,15 @@ def streaks(
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
-        - 0 < topx <= 20
     """
     errors.validate_season(season)
-    errors.validate_topx(topx, 20)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
 
         highest_streaks = records.highest_win_streaks(league, season, topx)
     io.table(
-        title=f"Top {topx} Highest Win Streaks in the {season} Premier League",
+        title=f"Top {len(highest_streaks)} Highest Win Streaks in the {season} Premier League",
         headers=["Team", "Streak Length"],
         colors=["cyan", "magenta"],
         data=highest_streaks,
@@ -144,19 +142,20 @@ def comebacks(
     Preconditions
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
     """
-    if season is None:
-        errors.validate_topx(topx, 100)
-        title = f"Top {topx} Best Comebacks Teams in the Premier League"
-    else:
+    if season is not None:
         errors.validate_season(season)
-        errors.validate_topx(topx, 20)
-        title = f"Top {topx} Best Comebacks Teams in the {season} Premier League Season"
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
 
         best_comebacks = records.best_comebacks(league, season, topx)
+
+        if season is None:
+            title = f"Top {len(best_comebacks)} Best Comebacks Teams in the Premier League"
+        else:
+            title = f"Top {len(best_comebacks)} Best Comebacks Teams in the {season} Premier League Season"
 
     io.table(
         title=title,
@@ -179,23 +178,18 @@ def goals(
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     if season is not None:
         errors.validate_season(season)
-        errors.validate_topx(topx, 20)
-    else:
-        errors.validate_topx(topx, 100)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
 
         most_goals = records.most_goals_scored(league, season, topx)
         if season is None:
-            title = f"Top {topx} Most Goals Scored Games in the Premier League"
+            title = f"Top {len(most_goals)} Most Goals Scored Games in the Premier League"
         else:
-            title = f"Top {topx} Most Goals Scored Games in the {season} Premier League Season"
+            title = f"Top {len(most_goals)} Most Goals Scored Games in the {season} Premier League Season"
     io.table(
         title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=90
     )
@@ -212,14 +206,9 @@ def fairplay(
     Preconditions
         - season is in the format '20XX-XX' between 2009-10 and 2018-19 or season is None
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     if season is not None:
         errors.validate_season(season)
-        errors.validate_topx(topx, 20)
-    else:
-        errors.validate_topx(topx, 100)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -227,9 +216,9 @@ def fairplay(
         most_fairplay = records.most_fairplay(league, season, topx)
 
         if season is None:
-            title = f"Top {topx} Most Fairplay Teams in the Premier League"
+            title = f"Top {len(most_fairplay)} Most Fairplay Teams in the Premier League"
         else:
-            title = f"Top {topx} Most fairplay teams in the {season} Premier League Season"
+            title = f"Top {len(most_fairplay)} Most fairplay teams in the {season} Premier League Season"
 
     io.table(
         title=title,
@@ -249,6 +238,7 @@ def improvement(
 
     Preconditions
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - 0 < topx <= 20
     """
     errors.validate_season(season)
     errors.validate_topx(topx, 20)
@@ -257,7 +247,7 @@ def improvement(
         progress.add_task("Compiling results...")
 
         most_improved = records.most_improved_teams(league, season, topx)
-        title = f"Top {topx} Most Improved Teams in the {season} Premier League Season"
+        title = f"Top {len(most_improved)} Most Improved Teams in the {season} Premier League Season"
 
     io.table(
         title=title,
@@ -278,25 +268,109 @@ def optimalfouls(
     Preconditions
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
-        - 0 < topx <= 7
+        - topx > 0
     """
     if team is not None:
         errors.validate_team(league, team)
-    errors.validate_topx(topx, 7)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
         optimal_fouls = optimization.calculate_optimal_fouls(league, team, topx)
 
         if team is None:
-            title = f"Top {topx} Optimal Foul Ranges for all Premier League Teams"
+            title = f"Top {len(optimal_fouls)} Optimal Foul Ranges for all Premier League Teams"
         else:
-            title = f"Top {topx} Optimal Foul Ranges for {team}"
+            title = f"Top {len(optimal_fouls)} Optimal Foul Ranges for {team}"
     io.table(
         title=title,
-        headers=["Foul Range", "Number of Wins Recorded", "Percent of Total Decade Wins"],
+        headers=["Foul Range", "Number of Wins Recorded", "Percent of Total Decade Wins (%)"],
         colors=["cyan", "magenta", "green"],
         data=optimal_fouls,
+        width=90,
+    )
+
+
+@app.command()
+def optimalyellowcards(
+    team: str = typer.Option(default=None),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the optimal yellow cards for the provided team.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+    """
+    if team is not None:
+        errors.validate_team(league, team)
+
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+        optimal_yellows = optimization.calculate_optimal_yellow_cards(league, team, topx)
+
+        if team is None:
+            title = f"Top {len(optimal_yellows)} Optimal Yellow Card Ranges for all Premier League Teams"
+        else:
+            title = f"Top {len(optimal_yellows)} Optimal Yellow Card Ranges for {team}"
+    io.table(
+        title=title,
+        headers=["Yellow Card Range", "Number of Wins Recorded", "Percent of Total Decade Wins (%)"],
+        colors=["cyan", "magenta", "green"],
+        data=optimal_yellows,
+        width=90,
+    )
+
+
+@app.command()
+def optimalreferees(
+    team: str = typer.Option(...),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the optimal referee for the provided team.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+    """
+    errors.validate_team(league, team)
+
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+        optimal_referees = optimization.calculate_optimal_referees(league, team, topx)
+
+        title = f"Top {len(optimal_referees)} Optimal Referees for {team} in the Premier League"
+    io.table(
+        title=title,
+        headers=["Referee Name", "Number of Wins Recorded", "Games Refereed", "Win Percentage (%)"],
+        colors=["cyan", "magenta", "green", "yellow"],
+        data=optimal_referees,
+        width=90,
+    )
+
+
+@app.command()
+def fairestreferees(
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the topx fairest referees for the whole league.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+    """
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+        fairest_referees = optimization.calculate_fairest_referees(league, topx)
+
+        title = f"Top {len(fairest_referees)} Fairest Referees for all Premier League Teams"
+    io.table(
+        title=title,
+        headers=["Referee Name", "Number of Games Refereed", "Winrate Discrepancy"],
+        colors=["cyan", "magenta", "yellow"],
+        data=fairest_referees,
         width=90,
     )
 
