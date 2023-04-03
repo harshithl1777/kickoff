@@ -113,8 +113,6 @@ def most_clutch_team(league: League, season: Optional[str] = None, topx: int = 4
     clutch = []
     max_clutch = 0
 
-    print(len(matches))
-
     for match in matches:
         if season is None or match.season == season:
             if match.result is None:
