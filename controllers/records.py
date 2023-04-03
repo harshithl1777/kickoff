@@ -9,6 +9,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 # pylint: disable=C0103
 from typing import Optional
 import heapq
+from controllers.basic import overall_winrate
 
 from models.league import League
 from models.team import Team
@@ -250,6 +251,25 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
         winrate_progression.append(winrate)
 
     return winrate_progression
+
+
+def highest_win_rate(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, float]]:
+    """Return a list of the topx teams with the highest win rate in the league. Consider season statistics
+    if provided. Otherwise, consider statistics from all seasons.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
+    """
+    names = league.get_team_names()
+    win_rates = []
+    for name in names:
+        if season is None or season in league.get_team(name).seasons:
+            win_rates.append((name, round(overall_winrate(league, name, season), 2)))
+
+    return sorted(win_rates, key=lambda win_rate: win_rate[1], reverse=True)[:topx]
 
 
 if __name__ == "__main__":

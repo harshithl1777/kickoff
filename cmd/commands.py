@@ -117,6 +117,7 @@ def streaks(
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
     errors.validate_season(season)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -146,6 +147,7 @@ def comebacks(
     """
     if season is not None:
         errors.validate_season(season)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -181,6 +183,7 @@ def goals(
     """
     if season is not None:
         errors.validate_season(season)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -209,6 +212,7 @@ def fairplay(
     """
     if season is not None:
         errors.validate_season(season)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -272,6 +276,7 @@ def optimalfouls(
     """
     if team is not None:
         errors.validate_team(league, team)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -291,6 +296,33 @@ def optimalfouls(
 
 
 @app.command()
+def highestwinrates(
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the topx teams with the highest win rate for the specified season.
+    If season is not found, the statistic will be calculated across all seasons.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+    """
+    if season is not None:
+        errors.validate_season(season)
+    errors.validate_topx(topx)
+
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+        top_win_rates = records.highest_win_rate(league, season, topx)
+
+        if season is None:
+            title = "Highest Win Rates in the Premier League"
+        else:
+            title = f"Top {len(top_win_rates)} Highest Win Rates in the {season} Premier League Season"
+
+    io.table(title=title, headers=["Team", "Winrate (%)"], colors=["cyan", "yellow"], data=top_win_rates, width=100)
+
+
 def optimalyellowcards(
     team: str = typer.Option(default=None),
     topx: int = typer.Option(default=4, help="Enter the top x values to output"),
@@ -304,6 +336,7 @@ def optimalyellowcards(
     """
     if team is not None:
         errors.validate_team(league, team)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -335,6 +368,7 @@ def optimalreferees(
         - topx > 0
     """
     errors.validate_team(league, team)
+    errors.validate_topx(topx)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
@@ -361,6 +395,8 @@ def fairestreferees(
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
     """
+    errors.validate_topx(topx)
+
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
         progress.add_task("Compiling results...")
         fairest_referees = optimization.calculate_fairest_referees(league, topx)
