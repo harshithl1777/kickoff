@@ -53,7 +53,7 @@ def winrate(
 
 
 @app.command()
-def teamvsleague(team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")) -> None:
+def averages(team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")) -> None:
     """Outputs various team statistics compared to the overall league statistics for the specified season.
 
     Preconditions:
@@ -102,7 +102,7 @@ def teamvsleague(team: str = typer.Option(...), season: str = typer.Option(..., 
     io.table(
         title=title,
         headers=["Statistic", f"{team}", "League", "Difference"],
-        colors=["cyan", "magenta", "cyan", "magenta"],
+        colors=["cyan", "magenta", "yellow", "green"],
         data=updated_data,
         width=100,
     )
