@@ -283,7 +283,7 @@ def optimalfouls(
             title = f"Top {len(optimal_fouls)} Optimal Foul Ranges for {team}"
     io.table(
         title=title,
-        headers=["Foul Range", "Number of Wins Recorded", "Percent of Total Decade Wins (%)"],
+        headers=["Foul Range", "Number of Wins Recorded", "Win Percentage (%)"],
         colors=["cyan", "magenta", "green"],
         data=optimal_fouls,
         width=90,
@@ -315,7 +315,7 @@ def optimalyellowcards(
             title = f"Top {len(optimal_yellows)} Optimal Yellow Card Ranges for {team}"
     io.table(
         title=title,
-        headers=["Yellow Card Range", "Number of Wins Recorded", "Percent of Total Decade Wins (%)"],
+        headers=["Yellow Card Range", "Number of Wins Recorded", "Win Percentage (%)"],
         colors=["cyan", "magenta", "green"],
         data=optimal_yellows,
         width=90,
