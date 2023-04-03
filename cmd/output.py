@@ -7,6 +7,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 # pylint: disable=C0200
 
 from typing import Any
+import time
 from rich.console import Console
 from rich.table import Table
 from rich.style import Style
@@ -50,6 +51,12 @@ def table(title: str, headers: list[str], colors: list[str], data: list[tuple[An
     console = Console()
     console.line()
     console.print(output_table)
+
+
+def newline() -> None:
+    """Uses rich to print a newline to the command line"""
+    console = Console()
+    console.line()
 
 
 if __name__ == "__main__":
