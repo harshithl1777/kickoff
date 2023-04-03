@@ -8,7 +8,7 @@ Kickoff aims to solve both of these problems through a **Python CLI** that helps
 
 Installing Kickoff is incredibly simple. First, you'll need Python and a Python version of `3.11` or higher. Then, use `pip` to install Kickoff from PyPI with the below command:
 
--   `pip install kickoff`
+-   `pip install kickoff-epl`
 
 ## Computational Overview
 
