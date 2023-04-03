@@ -300,40 +300,32 @@ def optimalfouls(
         width=90,
     )
 
+
 @app.command()
 def highestwinrates(
-        season: str = typer.Option(default=None, help="ex. 2009-10"),
-        topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
 ) -> None:
     """Outputs the topx teams with the highest win rate for the specified season.
-    If no arguments are found, the statistic will be calculated across all seasons.
+    If season is not found, the statistic will be calculated across all seasons.
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     if season is not None:
         errors.validate_season(season)
-        errors.validate_topx(topx, 20)
-    else:
-        errors.validate_topx(topx, 100)
+    errors.validate_topx(topx, 20)
 
-    most_win_rate = records.highest_win_rate(league, season, topx)
+    top_win_rates = records.highest_win_rate(league, season, topx)
 
     if season is None:
-        title = "Teams with the Highest Win Rates in the Premier League"
+        title = "Highest Win Rates in the Premier League"
     else:
-        title = f"Teams with the Highest Win Rates in the {season} Premier League Season"
+        title = f"Top {len(top_win_rates)} Highest Win Rates in the {season} Premier League Season"
 
-    io.table(
-        title=title,
-        headers=["Team", "Winrates (%)"],
-        colors=["cyan", "yellow"],
-        data=most_win_rate,
-        width=120
-    )
+    io.table(title=title, headers=["Team", "Winrate (%)"], colors=["cyan", "yellow"], data=top_win_rates, width=100)
+
 
 if __name__ == "__main__":
     import python_ta

@@ -256,6 +256,7 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
 
     return winrate_progression
 
+
 def highest_win_rate(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, float]]:
     """Return a list of the topx teams with the highest win rate in the league. Consider season statistics
     if provided. Otherwise, consider statistics from all seasons.
@@ -268,10 +269,10 @@ def highest_win_rate(league: League, season: Optional[str] = None, topx: int = 4
     """
     names = league.get_team_names()
     win_rates = []
-    for name in names:   
+    for name in names:
         if season is None or season in league.get_team(name).seasons:
             win_rates.append((name, round(overall_winrate(league, name, season), 2)))
-        
+
     return sorted(win_rates, key=lambda win_rate: win_rate[1], reverse=True)[:topx]
 
 
