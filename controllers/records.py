@@ -30,8 +30,7 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         if season is None or match.season == season:
             if match.result is None:
                 winner_goals = match.details[match.home_team.name].full_time_goals
-                team_name = str(match.home_team.name) + \
-                    " & " + str(match.away_team.name)
+                team_name = str(match.home_team.name) + " & " + str(match.away_team.name)
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
@@ -123,11 +122,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
 
-    return (team.name,
-            round(worst_winrate, 2),
-            round(final_winrate, 2),
-            round(final_winrate - worst_winrate, 2)
-            )
+    return (team.name, round(worst_winrate, 2), round(final_winrate, 2), round(final_winrate - worst_winrate, 2))
 
 
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
@@ -157,6 +152,7 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
 
 if __name__ == "__main__":
     import python_ta
+
     python_ta.check_all(
         config={
             "extra-imports": ["typing", "models.league"],

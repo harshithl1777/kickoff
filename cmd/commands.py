@@ -45,10 +45,9 @@ def winrate(
 
     io.info(message=display_str, color="dodger_blue1")
 
+
 @app.command()
-def teamvsleague(
-    team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")
-) -> None:
+def teamvsleague(team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")) -> None:
     """Outputs various team statistics compared to the overall league statistics for the specified season.
 
     Preconditions:
@@ -57,11 +56,28 @@ def teamvsleague(
     errors.validate_team(league, team)
     errors.validate_season(season)
 
-    data = [("Average Goals Scored", round(basic.get_team_goals_scored(league, team, season), 2), round(basic.get_season_goals_scored(league, season), 2)),
-            ("Average Shot Accuracy (%)", round(basic.get_team_shot_accuracy(league, team, season), 2), round(basic.get_season_shot_accuracy(league, season), 2)),
-            ("Average Fouls Committed", round(basic.get_team_fouls(league, team, season), 2), round(basic.get_season_fouls(league, season), 2)),
-            ("Average Card Offenses", round(basic.get_team_cards(league, team, season), 2), round(basic.get_season_cards(league, season), 2)) 
-            ]
+    data = [
+        (
+            "Average Goals Scored",
+            round(basic.get_team_goals_scored(league, team, season), 2),
+            round(basic.get_season_goals_scored(league, season), 2),
+        ),
+        (
+            "Average Shot Accuracy (%)",
+            round(basic.get_team_shot_accuracy(league, team, season), 2),
+            round(basic.get_season_shot_accuracy(league, season), 2),
+        ),
+        (
+            "Average Fouls Committed",
+            round(basic.get_team_fouls(league, team, season), 2),
+            round(basic.get_season_fouls(league, season), 2),
+        ),
+        (
+            "Average Card Offenses",
+            round(basic.get_team_cards(league, team, season), 2),
+            round(basic.get_season_cards(league, season), 2),
+        ),
+    ]
 
     title = f"{team} Statistics Compared to the Rest of the League in the {season} Premier League Season"
     io.table(
@@ -71,30 +87,35 @@ def teamvsleague(
         data=data,
         width=70,
     )
+
+
 @app.command()
-def hva(
-        season: str = typer.Option(default=None, help="ex. 2009-10"),
-        team: str = typer.Option(default=None, help="ex. Arsenal")
+def homevsaway(
+    team: str = typer.Option(default=None),
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
 ) -> None:
     """Outputs the highest value added statistic for the specified season.
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    errors.validate_season(season)
+    if season is not None:
+        errors.validate_season(season)
     if team is not None:
         errors.validate_team(league, team)
+    if team is not None and season is not None:
+        errors.validate_team_in_season(league, team, season)
 
     home_vs_away = basic.home_vs_away(league, team, season)
     if team is None and season is None:
-        title = f"Home vs Away Winrate in the Premier League"
+        title = "Home vs Away Winrate in the Premier League"
     elif team is None and season is not None:
         title = f"Home vs Away Winrate in the {season} Premier League"
     else:
-        title = f"Home vs Awat in the {season} Premier League for {team}"
+        title = f"Home vs Away Winrate for {team} in the {season} Premier League"
     io.table(
         title=title,
-        headers=["Home Win Rate", "Away Win Rate", "Draw Rate"],
+        headers=["Home Win Rate (%)", "Away Win Rate (%)", "Draw Rate (%)"],
         colors=["cyan", "magenta", "cyan"],
         data=home_vs_away,
         width=70,
@@ -176,7 +197,7 @@ def improvement(
         headers=["Team", "Lowest Win (%)", "Final Winrate (%)", "Winrate Improvement (%)"],
         colors=["cyan", "magenta", "cyan", "magenta"],
         data=most_improved,
-        width=80
+        width=80,
     )
 
 
