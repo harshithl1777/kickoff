@@ -4,9 +4,12 @@ This module contains functionality for finding various records in the datasets.
 
 This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram Makkar and Muhammad Ibrahim.
 """
-
+# pylint: disable=C0206
+# pylint: disable=C0200
+# pylint: disable=C0103
 from typing import Optional
 import heapq
+from controllers.basic import overall_winrate
 
 from models.league import League
 from models.team import Team
@@ -21,7 +24,7 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
-        - 0 < topx <= 20
+        - topx > 0
     """
     matches = get_all_matches(league)
     goals = []
@@ -30,8 +33,7 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         if season is None or match.season == season:
             if match.result is None:
                 winner_goals = match.details[match.home_team.name].full_time_goals
-                team_name = str(match.home_team.name) + \
-                    " & " + str(match.away_team.name)
+                team_name = str(match.home_team.name) + " & " + str(match.away_team.name)
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
@@ -43,14 +45,59 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
     return sorted(goals, key=lambda goal: goal[1], reverse=True)[:topx]
 
 
+def most_fairplay(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, float]]:
+    """Return a list of the topx most fairplay teams in the league. A fairplay team is measured by the
+    least ratio of number of card offenses received and fouls commited to matches played. Consider season
+    statistics if provided. Otherwise, consider stastics from all seasons.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+    """
+    matches = get_all_matches(league)
+    team_offenses = {}
+    offenses = []
+
+    for match in matches:
+        if season is None or match.season == season:
+            home_team = match.home_team.name
+            away_team = match.away_team.name
+
+            yellows_h = match.details[home_team].yellow_cards
+            reds_h = match.details[home_team].red_cards * 2
+            fouls_h = match.details[home_team].fouls
+
+            yellows_a = match.details[away_team].yellow_cards
+            reds_a = match.details[away_team].red_cards * 2
+            fouls_a = match.details[away_team].fouls
+
+            if home_team not in team_offenses:
+                team_offenses[home_team] = [(yellows_h + reds_h + fouls_h), 1]
+
+            else:
+                team_offenses[home_team][0] += yellows_h + reds_h + fouls_h
+                team_offenses[home_team][1] += 1
+
+            if away_team not in team_offenses:
+                team_offenses[away_team] = [(yellows_a + reds_a + fouls_a), 1]
+            else:
+                team_offenses[away_team][0] += yellows_a + reds_a + fouls_a
+                team_offenses[away_team][1] += 1
+
+    for team in team_offenses:
+        fair_play_ratio = team_offenses[team][0] / team_offenses[team][1]
+        tup = (team, round(fair_play_ratio, 2))
+        offenses.append(tup)
+
+    return sorted(offenses, key=lambda fairplay: fairplay[1])[:topx]
+
+
 def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tuple[str, int]]:
     """Return a list of the topx highest win streaks in the specified season
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     team_names = league.get_team_names(season)
     streaks = []
@@ -79,9 +126,8 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     The most improved team is calculated based on a computation on the team's winrate throughout the season.
 
     Each tuple in the returned list will be of the form
-    (team name, worst winrate, final winrate, winrate improve)
-    where
-    team name is the name of the team,
+    (team name, worst winrate, final winrate, winrate improvement)
+    where team name is the name of the team,
     worst winrate is the lowest the team's winrate has been in the season*,
     final winrate is the winrate of the team at the end of the season,
     winrate improve is the difference between the final winrate and worst winrate
@@ -91,6 +137,9 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
 
     * worst winrate is calculated after ignoring the first 8 matches of the season.
     This is done because the teams winrate in the first few matches will be skewed.
+
+    Preconditions:
+        - 0 < topx <= 20
     """
     team_improvements = []
     team_names = league.get_team_names(season)
@@ -101,6 +150,59 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
         team_improvements.append(improvement_statistic)
 
     return heapq.nlargest(top_x, team_improvements, key=lambda x: x[3])
+
+
+def best_comebacks(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, str, int]]:
+    """Return a list of the best comebacks in the specified season. The comebacks are
+    calculated only for the teams that are initially losing in the first half that end
+    up winning or drawing the game.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    matches = get_all_matches(league)
+    comebacks = []
+
+    for match in matches:
+        if season is None or match.season == season:
+            ht_name, at_name = match.home_team.name, match.away_team.name
+
+            half_time, full_time = {
+                ht_name: match.details[ht_name].half_time_goals,
+                at_name: match.details[at_name].half_time_goals,
+            }, {
+                ht_name: match.details[ht_name].full_time_goals,
+                at_name: match.details[at_name].full_time_goals,
+            }
+
+            if half_time[at_name] == half_time[ht_name]:
+                continue
+            elif half_time[at_name] > half_time[ht_name]:
+                ht_winner = at_name
+                ht_loser = ht_name
+            else:
+                ht_winner = ht_name
+                ht_loser = at_name
+
+            ht_score = f"{half_time[ht_loser]} - {half_time[ht_winner]}"
+
+            if full_time[at_name] == full_time[ht_name]:
+                ft_draw_score = f"{full_time[ht_winner]} - {full_time[ht_loser]}"
+                comebacks.append(
+                    (f"{ht_loser} ({match.season})", ht_score, ft_draw_score, full_time[ht_name] - half_time[ht_loser])
+                )
+            elif full_time[at_name] > full_time[ht_name] and ht_loser == at_name:
+                ft_score = f"{full_time[at_name]} - {full_time[ht_name]}"
+                comebacks.append(
+                    (f"{at_name} ({match.season})", ht_score, ft_score, full_time[at_name] - half_time[ht_loser])
+                )
+            elif full_time[at_name] < full_time[ht_name] and ht_loser == ht_name:
+                ft_score = f"{full_time[ht_name]} - {full_time[at_name]}"
+                comebacks.append(
+                    (f"{ht_name} ({match.season})", ht_score, ft_score, full_time[ht_name] - half_time[ht_loser])
+                )
+
+    return sorted(comebacks, key=lambda clutch: clutch[3], reverse=True)[:topx]
 
 
 def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
@@ -123,11 +225,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
 
-    return (team.name,
-            round(worst_winrate, 2),
-            round(final_winrate, 2),
-            round(final_winrate - worst_winrate, 2)
-            )
+    return (team.name, round(worst_winrate, 2), round(final_winrate, 2), round(final_winrate - worst_winrate, 2))
 
 
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
@@ -155,8 +253,28 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
     return winrate_progression
 
 
+def highest_win_rate(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, float]]:
+    """Return a list of the topx teams with the highest win rate in the league. Consider season statistics
+    if provided. Otherwise, consider statistics from all seasons.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - topx > 0
+        - season is not None and topx <= 100
+        - season is None and topx <= 20
+    """
+    names = league.get_team_names()
+    win_rates = []
+    for name in names:
+        if season is None or season in league.get_team(name).seasons:
+            win_rates.append((name, round(overall_winrate(league, name, season), 2)))
+
+    return sorted(win_rates, key=lambda win_rate: win_rate[1], reverse=True)[:topx]
+
+
 if __name__ == "__main__":
     import python_ta
+
     python_ta.check_all(
         config={
             "extra-imports": ["typing", "models.league"],

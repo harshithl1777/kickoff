@@ -34,21 +34,22 @@ class Constants:
             "AY",
             "HR",
             "AR",
+            "Referee",
         ]
         self._constants[
             "HELP_COMMAND_INTRO"
         ] = "Kickoff is a football data analysis app that provides records and insights to football fans everywhere!"
         self._constants["VALID_SEASONS"] = [
-            '2009-10',
-            '2010-11',
-            '2011-12',
-            '2012-13',
-            '2013-14',
-            '2014-15',
-            '2015-16',
-            '2016-17',
-            '2017-18',
-            '2018-19'
+            "2009-10",
+            "2010-11",
+            "2011-12",
+            "2012-13",
+            "2013-14",
+            "2014-15",
+            "2015-16",
+            "2016-17",
+            "2017-18",
+            "2018-19",
         ]
 
     def retrieve(self, key: str) -> Any:

@@ -78,6 +78,7 @@ class MatchDetails:
         - yellow_cards: number of yellow cards given to the team in the match
         - half_time_goals: number of goals scored by the team at half time
         - full_time_goals: number of goals scored by the team at full time
+        - referee: the name of the referee that officiated this match
 
     Representation Invariants:
         ...
@@ -91,6 +92,7 @@ class MatchDetails:
     yellow_cards: int
     half_time_goals: int
     full_time_goals: int
+    referee: str
 
 
 if __name__ == "__main__":

@@ -28,10 +28,14 @@ def validate_team_in_season(league: League, team_input: str, season_input: str) 
         io.error("This team did not play a match in the given season.")
 
 
-def validate_topx(topx_input: int, topx_max: int) -> None:
+def validate_topx(topx_input: int, topx_max: int = None) -> None:
     """Check if the given topx input is less than the given topx maximum. If not, print an error."""
-    if not 0 < topx_input <= topx_max:
-        io.error(f"The top x value should be greater than 0 and less than {topx_max}")
+    if topx_max is not None:
+        if not 0 < topx_input <= topx_max:
+            io.error(f"The top x value should be greater than 0 and less than {topx_max}")
+    else:
+        if not 0 < topx_input:
+            io.error("The top x value should be greater than 0")
 
 
 if __name__ == "__main__":
