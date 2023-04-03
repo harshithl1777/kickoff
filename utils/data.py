@@ -86,6 +86,7 @@ def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> No
             yellow_cards=int(dataframe["HY"][i]),
             half_time_goals=int(dataframe["HTHG"][i]),
             full_time_goals=int(dataframe["FTHG"][i]),
+            referee=dataframe["Referee"][i],
         )
         away_team_details = MatchDetails(
             team=away_team,
@@ -96,6 +97,7 @@ def convert_to_graph(dataframe: pd.DataFrame, league: League, season: str) -> No
             yellow_cards=int(dataframe["AY"][i]),
             half_time_goals=int(dataframe["HTAG"][i]),
             full_time_goals=int(dataframe["FTAG"][i]),
+            referee=dataframe["Referee"][i],
         )
 
         if dataframe["FTR"][i] == "H":
