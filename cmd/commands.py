@@ -111,7 +111,8 @@ def homevsaway(
     team: str = typer.Option(default=None),
     season: str = typer.Option(default=None, help="ex. 2009-10"),
 ) -> None:
-    """Outputs the highest value added statistic for the specified season.
+    """Outputs the home vs away winrates for the given team in the given season.
+    If no team or season is provided, calculations will be done for the whole league.
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
@@ -123,17 +124,20 @@ def homevsaway(
     if team is not None and season is not None:
         errors.validate_team_in_season(league, team, season)
 
-    home_vs_away = basic.home_vs_away(league, team, season)
-    if team is None and season is None:
-        title = "Home vs Away Winrate in the Premier League"
-    elif team is None and season is not None:
-        title = f"Home vs Away Winrate in the {season} Premier League"
-    else:
-        title = f"Home vs Away Winrate for {team} in the {season} Premier League"
-    
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+
+        home_vs_away = basic.home_vs_away(league, team, season)
+        if team is None and season is None:
+            title = "Home vs Away Winrates in the Premier League"
+        elif team is None and season is not None:
+            title = f"Home vs Away Winrates in the {season} Premier League Season"
+        else:
+            title = f"Home vs Away Winrates for {team} in the {season} Premier League Season"
+
     io.table(
         title=title,
-        headers=["Home Win Rate (%)", "Away Win Rate (%)", "Total Draw Rate"],
+        headers=["Home Win Rate (%)", "Away Win Rate (%)", "Total Draw Rate (%)"],
         colors=["cyan", "magenta", "cyan"],
         data=home_vs_away,
         width=70,
