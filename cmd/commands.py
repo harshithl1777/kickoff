@@ -113,9 +113,10 @@ def homevsaway(
         title = f"Home vs Away Winrate in the {season} Premier League"
     else:
         title = f"Home vs Away Winrate for {team} in the {season} Premier League"
+    
     io.table(
         title=title,
-        headers=["Home Win Rate (%)", "Away Win Rate (%)", "Draw Rate (%)"],
+        headers=["Home Win Rate (%)", "Away Win Rate (%)", "Total Draw Rate"],
         colors=["cyan", "magenta", "cyan"],
         data=home_vs_away,
         width=70,
