@@ -7,6 +7,7 @@ This file is Copyright (c) 2023 Ram Raghav Sharma, Harshith Latchupatula, Vikram
 from typing import Optional
 
 from models.league import League
+from utils.league import get_all_matches
 
 
 def overall_winrate(league: League, team_name: str, season: Optional[str] = None) -> float:
@@ -31,6 +32,76 @@ def overall_winrate(league: League, team_name: str, season: Optional[str] = None
             total_wins += 1
 
     return (total_wins / total_matches) * 100
+
+def home_vs_away(league: League, team_name: Optional[str] = None, season: Optional[str] = None) -> list[tuple[float, float, float, float]]:
+    """Return the home winrate (as a percentage) and away wintrate (as a percentage) of the Team with team_name in the League.
+    Only consider matches in the season if the season is provided.
+
+    Preconditons:
+        - season in ['2009-10', '2010-11', '2011-12', '2012-13', '2013-14', '2014-15', '2015-16', '2016-17', \
+        '2017-18', '2018-19']
+        - team_name in league._teams
+        - If the season is provided, the team took part in that season
+    """
+    home_win_rate = 0
+    away_win_rate = 0
+    draw_rate = 0
+    
+    if team_name is not None and season is not None:
+            team = league.get_team(team_name)
+            total_matches = len([match for match in team.matches if match.season == season])
+            
+            for match in team.matches:
+                if season is not None and match.season != season:
+                    continue
+                
+                if match.result is None:
+                    draw_rate += 1
+
+                if match.home_team == team and match.result == team:
+                        home_win_rate += 1
+                elif match.away_team == team and match.result == team:
+                        away_win_rate += 1
+
+            home_win_rate = (home_win_rate / total_matches) * 100
+            away_win_rate= (away_win_rate / total_matches) * 100
+            draw_rate = (draw_rate / total_matches) * 100
+        
+    elif team_name is None and season is not None:
+        total_matches = len([match for match in get_all_matches(league) if match.season == season])
+        matches = get_all_matches(league)
+
+        for match in matches:
+            if season is not None and match.season != season:
+                continue
+            if match.home_team == match.result:
+                home_win_rate += 1
+            elif match.away_team == match.result:
+                away_win_rate += 1
+            else:
+                draw_rate += 1
+        
+        home_win_rate = (home_win_rate / total_matches) * 100
+        away_win_rate = (away_win_rate / total_matches) * 100
+        draw_rate = (draw_rate / total_matches) * 100
+
+    else:
+        matches = get_all_matches(league)
+        for match in matches:
+            if season is not None and match.season != season:
+                continue
+            if match.home_team == match.result:
+                home_win_rate += 1
+            elif match.away_team == match.result:
+                away_win_rate += 1
+            else:
+                draw_rate += 1
+        
+        home_win_rate = (home_win_rate / len(matches)) * 100
+        away_win_rate = (away_win_rate / len(matches)) * 100
+        draw_rate = (draw_rate / len(matches)) * 100
+    
+    return [(round(home_win_rate, 2), round(away_win_rate, 2), round(draw_rate, 2))]
 
 
 def get_team_goals_scored(league: League, team_name: str, season: Optional[str] = None) -> float:

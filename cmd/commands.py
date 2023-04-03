@@ -107,6 +107,44 @@ def averages(team: str = typer.Option(...), season: str = typer.Option(..., help
 
 
 @app.command()
+def homevsaway(
+    team: str = typer.Option(default=None),
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+) -> None:
+    """Outputs the home vs away winrates for the given team in the given season.
+    If no team or season is provided, calculations will be done for the whole league.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    if season is not None:
+        errors.validate_season(season)
+    if team is not None:
+        errors.validate_team(league, team)
+    if team is not None and season is not None:
+        errors.validate_team_in_season(league, team, season)
+
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+
+        home_vs_away = basic.home_vs_away(league, team, season)
+        if team is None and season is None:
+            title = "Home vs Away Winrates in the Premier League"
+        elif team is None and season is not None:
+            title = f"Home vs Away Winrates in the {season} Premier League Season"
+        else:
+            title = f"Home vs Away Winrates for {team} in the {season} Premier League Season"
+
+    io.table(
+        title=title,
+        headers=["Home Win Rate (%)", "Away Win Rate (%)", "Total Draw Rate (%)"],
+        colors=["cyan", "magenta", "cyan"],
+        data=home_vs_away,
+        width=70,
+    )
+
+
+@app.command()
 def streaks(
     season: str = typer.Option(..., help="ex. 2009-10"),
     topx: int = typer.Option(default=4, help="Enter the top x values to output"),
