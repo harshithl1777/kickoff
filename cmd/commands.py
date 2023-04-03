@@ -137,6 +137,37 @@ def streaks(
 
 
 @app.command()
+def comebacks(
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the winrate statistic for the specified team & season.
+    If no arguments are found, the statistic will be calculated for all teams and seasons.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    best_comebacks = records.best_comebacks(league, season, topx)
+
+    if season is None:
+        errors.validate_topx(topx, 100)
+        title = "Most Clutch Teams in the Premier League"
+    else:
+        errors.validate_season(season)
+        errors.validate_topx(topx, 20)
+        title = f"Most Clutch Teams in the {season} Premier League Season"
+
+    io.table(
+        title=title,
+        headers=["Team", "Half-Time Score", "Full-Time Score", "Comeback Size"],
+        colors=["cyan", "magenta", "yellow", "green"],
+        data=best_comebacks,
+        width=100,
+    )
+
+
+@app.command()
 def goals(
     season: str = typer.Option(default=None, help="ex. 2009-10"),
     topx: int = typer.Option(default=4, help="Enter the top x values to output"),

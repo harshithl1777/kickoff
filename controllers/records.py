@@ -155,6 +155,59 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     return heapq.nlargest(top_x, team_improvements, key=lambda x: x[3])
 
 
+def best_comebacks(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, str, int]]:
+    """Return a list of the best comebacks in the specified season. The comebacks are
+    calculated only for the teams that are initially losing in the first half that end
+    up winning or drawing the game.
+
+    Preconditions:
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    matches = get_all_matches(league)
+    comebacks = []
+
+    for match in matches:
+        if season is None or match.season == season:
+            ht_name, at_name = match.home_team.name, match.away_team.name
+
+            half_time, full_time = {
+                ht_name: match.details[ht_name].half_time_goals,
+                at_name: match.details[at_name].half_time_goals,
+            }, {
+                ht_name: match.details[ht_name].full_time_goals,
+                at_name: match.details[at_name].full_time_goals,
+            }
+
+            if half_time[at_name] == half_time[ht_name]:
+                continue
+            elif half_time[at_name] > half_time[ht_name]:
+                ht_winner = at_name
+                ht_loser = ht_name
+            else:
+                ht_winner = ht_name
+                ht_loser = at_name
+
+            ht_score = f"{half_time[ht_loser]} - {half_time[ht_winner]}"
+
+            if full_time[at_name] == full_time[ht_name]:
+                ft_draw_score = f"{full_time[ht_winner]} - {full_time[ht_loser]}"
+                comebacks.append(
+                    (f"{ht_loser} ({match.season})", ht_score, ft_draw_score, full_time[ht_name] - half_time[ht_loser])
+                )
+            elif full_time[at_name] > full_time[ht_name] and ht_loser == at_name:
+                ft_score = f"{full_time[at_name]} - {full_time[ht_name]}"
+                comebacks.append(
+                    (f"{at_name} ({match.season})", ht_score, ft_score, full_time[at_name] - half_time[ht_loser])
+                )
+            elif full_time[at_name] < full_time[ht_name] and ht_loser == ht_name:
+                ft_score = f"{full_time[ht_name]} - {full_time[at_name]}"
+                comebacks.append(
+                    (f"{ht_name} ({match.season})", ht_score, ft_score, full_time[ht_name] - half_time[ht_loser])
+                )
+
+    return sorted(comebacks, key=lambda clutch: clutch[3], reverse=True)[:topx]
+
+
 def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
     """Computed improvement statistic for the team in the specified season.
 
