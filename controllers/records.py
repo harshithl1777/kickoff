@@ -30,8 +30,7 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
         if season is None or match.season == season:
             if match.result is None:
                 winner_goals = match.details[match.home_team.name].full_time_goals
-                team_name = str(match.home_team.name) + \
-                    " & " + str(match.away_team.name)
+                team_name = str(match.home_team.name) + " & " + str(match.away_team.name)
             else:
                 winner_goals = match.details[match.result.name].full_time_goals
                 team_name = match.result.name
@@ -103,58 +102,57 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     return heapq.nlargest(top_x, team_improvements, key=lambda x: x[3])
 
 
-def most_clutch_team(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, int, int]]:
-    """Return a list of the most clutch teams in the specified season
+def best_comebacks(league: League, season: Optional[str] = None, topx: int = 4) -> list[tuple[str, str, int]]:
+    """Return a list of the best comebacks in the specified season. The comebacks are
+    calculated only for the teams that are initially losing in the first half that end
+    up winning or drawing the game.
 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
     matches = get_all_matches(league)
-    clutch = []
-    max_clutch = 0
-
-    print(len(matches))
+    comebacks = []
 
     for match in matches:
         if season is None or match.season == season:
-            if match.result is None:
-                name = str(match.home_team.name) + " & " + str(match.away_team.name)
-                if season is None:
-                    name += f" ({match.season})"
-                clutch.append((name, "0 - 0", "0 - 0", 0))
+            ht_name, at_name = match.home_team.name, match.away_team.name
+
+            half_time, full_time = {
+                ht_name: match.details[ht_name].half_time_goals,
+                at_name: match.details[at_name].half_time_goals,
+            }, {
+                ht_name: match.details[ht_name].full_time_goals,
+                at_name: match.details[at_name].full_time_goals,
+            }
+
+            if half_time[at_name] == half_time[ht_name]:
+                continue
+            elif half_time[at_name] > half_time[ht_name]:
+                ht_winner = at_name
+                ht_loser = ht_name
             else:
-                name = match.result.name
-                
-                home_points_half = int(match.details[match.home_team.name].half_time_goals)
-                away_points_half = int(match.details[match.away_team.name].half_time_goals)
-                
-                home_points_full = int(match.details[match.home_team.name].full_time_goals)
-                away_points_full = int(match.details[match.away_team.name].full_time_goals)
+                ht_winner = ht_name
+                ht_loser = at_name
 
-                home_points_half_total = home_points_half - away_points_half
-                away_points_half_total = away_points_half - home_points_half
+            ht_score = f"{half_time[ht_loser]} - {half_time[ht_winner]}"
 
-                home_points_full_total = home_points_full - away_points_full
-                away_points_full_total = away_points_full - home_points_full
+            if full_time[at_name] == full_time[ht_name]:
+                ft_draw_score = f"{full_time[ht_winner]} - {full_time[ht_loser]}"
+                comebacks.append(
+                    (f"{ht_loser} ({match.season})", ht_score, ft_draw_score, full_time[ht_name] - half_time[ht_loser])
+                )
+            elif full_time[at_name] > full_time[ht_name] and ht_loser == at_name:
+                ft_score = f"{full_time[at_name]} - {full_time[ht_name]}"
+                comebacks.append(
+                    (f"{at_name} ({match.season})", ht_score, ft_score, full_time[at_name] - half_time[ht_loser])
+                )
+            elif full_time[at_name] < full_time[ht_name] and ht_loser == ht_name:
+                ft_score = f"{full_time[ht_name]} - {full_time[at_name]}"
+                comebacks.append(
+                    (f"{ht_name} ({match.season})", ht_score, ft_score, full_time[ht_name] - half_time[ht_loser])
+                )
 
-                home_total = home_points_full_total - home_points_half_total
-                away_total = away_points_full_total - away_points_half_total
-            
-            if season is None:
-                name += f" ({match.season})"
-            
-            if max_clutch < home_total and max_clutch < away_total and home_total == away_total:
-                max_clutch = home_total
-                clutch.append((str(match.home_team.name) + " & " + str(match.away_team.name), int(home_points_half_total), int(home_points_full_total), int(home_total)))
-            
-            if max_clutch < home_total and home_total > away_total and home_points_half < away_points_half and home_points_full > away_points_full:
-                max_clutch = home_total
-                clutch.append((name, f"{abs(home_points_half)} - {abs(away_points_half)}", f"{abs(home_points_full)} - {abs(away_points_full)}", home_total))
-            elif max_clutch < away_total and away_total > home_total and away_points_half < home_points_half and away_points_full > home_points_full:
-                max_clutch = away_total
-                clutch.append((name, f"{abs(home_points_half)} - {abs(away_points_half)}", f"{abs(home_points_full)} - {abs(away_points_full)}", away_total))
-    
-    return sorted(clutch, key=lambda clutch: clutch[3], reverse=True)[:topx]
+    return sorted(comebacks, key=lambda clutch: clutch[3], reverse=True)[:topx]
 
 
 def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
@@ -177,11 +175,7 @@ def _calculate_improvement_statistic(team: Team, season: str) -> tuple():
         if winrate_progression[i] < worst_winrate:
             worst_winrate = winrate_progression[i]
 
-    return (team.name,
-            round(worst_winrate, 2),
-            round(final_winrate, 2),
-            round(final_winrate - worst_winrate, 2)
-            )
+    return (team.name, round(worst_winrate, 2), round(final_winrate, 2), round(final_winrate - worst_winrate, 2))
 
 
 def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
@@ -211,6 +205,7 @@ def _calculate_winrate_progression(team: Team, season: str) -> list[float]:
 
 if __name__ == "__main__":
     import python_ta
+
     python_ta.check_all(
         config={
             "extra-imports": ["typing", "models.league"],
