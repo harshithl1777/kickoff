@@ -49,7 +49,8 @@ def winrate(
 @app.command()
 def streaks(
     season: str = typer.Option(..., help="ex. 2009-10"),
-    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+    topx: int = typer.Option(
+        default=4, help="Enter the top x values to output"),
 ) -> None:
     """Outputs the longest win streaks statistic for the specified season.
 
@@ -73,7 +74,8 @@ def streaks(
 @app.command()
 def goals(
     season: str = typer.Option(default=None, help="ex. 2009-10"),
-    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+    topx: int = typer.Option(
+        default=4, help="Enter the top x values to output"),
 ) -> None:
     """Outputs the winrate statistic for the specified team & season.
     If no arguments are found, the statistic will be calculated for all teams and seasons.
@@ -104,7 +106,8 @@ def goals(
 @app.command()
 def improvement(
     season: str = typer.Option(..., help="ex. 2009-10"),
-    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+    topx: int = typer.Option(
+        default=4, help="Enter the top x values to output"),
 ) -> None:
     """Output the topx most improved teams in the season.
 
@@ -118,7 +121,8 @@ def improvement(
     title = f"Most Improved Teams in the {season} Premier League"
     io.table(
         title=title,
-        headers=["Team", "Lowest Win (%)", "Final Winrate (%)", "Winrate Improvement (%)"],
+        headers=[
+            "Team", "Lowest Win (%)", "Final Winrate (%)", "Winrate Improvement (%)"],
         colors=["cyan", "magenta", "cyan", "magenta"],
         data=most_improved,
         width=80
@@ -128,7 +132,8 @@ def improvement(
 @app.command()
 def optimalfouls(
     team: str = typer.Option(default=None),
-    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+    topx: int = typer.Option(
+        default=4, help="Enter the top x values to output"),
 ) -> None:
     """Outputs the optimal fouls for the provided team.
 
@@ -148,11 +153,40 @@ def optimalfouls(
         title = f"Optimal Foul Ranges for {team}"
     io.table(
         title=title,
-        headers=["Foul Range", "Number of Wins Recorded", "Percent of Total Decade Wins"],
+        headers=["Foul Range", "Number of Wins Recorded",
+                 "Percent of Total Decade Wins"],
         colors=["cyan", "magenta", "green"],
         data=optimal_fouls,
         width=90,
     )
+
+
+@app.command()
+def predict(
+    home: str = typer.Option(...),
+    away: str = typer.Option(...),
+    season: str = typer.Option(..., help="ex. 2009-10"),
+) -> None:
+    """Predict the outcome of a match between the home and away team 
+    based on data from the specified season.
+
+    Preconditions
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+        - home team took part in the season
+        - away team took part in the season
+    """
+    errors.validate_team(league, home)
+    errors.validate_team(league, away)
+    errors.validate_season(season)
+
+    prediction = round(optimization.predict(home, away, season, league), 2)
+
+    if prediction < 0:
+        display_str = f"Prediction: {home} loses against {away} with a {-prediction} goals difference."
+    else:
+        display_str = f"Prediction: {home} wins against {away} with a {prediction} goals difference."
+
+    io.info(message=display_str, color="dodger_blue1")
 
 
 if __name__ == "__main__":

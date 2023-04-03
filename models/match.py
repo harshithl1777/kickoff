@@ -58,6 +58,10 @@ class Match:
         else:
             return self.home_team
 
+    def __repr__(self) -> str:
+        return f"home: {self.home_team.name} vs away: {self.away_team.name}"
+    
+
 
 
 # @check_contracts
