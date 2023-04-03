@@ -13,7 +13,7 @@ from typing import Optional
 import typer
 
 from utils import constants, data
-from controllers import basic, records, optimization
+from controllers import basic, records, optimization, predictions
 
 league = data.load_csv_files()
 constants = constants.Constants()
@@ -167,10 +167,10 @@ def predict(
     away: str = typer.Option(...),
     season: str = typer.Option(..., help="ex. 2009-10"),
 ) -> None:
-    """Predict the outcome of a match between the home and away team 
-    based on data from the specified season.
+    """Predict the outcome of a match in the 2019-20 season
+    between the home and away team based on data from the 2018-19 season.
 
-    Preconditions
+    Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - home team took part in the season
         - away team took part in the season
@@ -179,7 +179,7 @@ def predict(
     errors.validate_team(league, away)
     errors.validate_season(season)
 
-    prediction = round(optimization.predict(home, away, season, league), 2)
+    prediction = round(predictions.predict(home, away, season, league), 2)
 
     if prediction < 0:
         display_str = f"Prediction: {home} loses against {away} with a {-prediction} goals difference."
