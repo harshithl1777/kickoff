@@ -39,7 +39,6 @@ def winrate(
         errors.validate_team_in_season(league, team, season)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
 
         winrate_percent = round(basic.overall_winrate(league, team, season), 2)
@@ -65,7 +64,6 @@ def averages(team: str = typer.Option(...), season: str = typer.Option(..., help
     errors.validate_team_in_season(league, team, season)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
 
         updated_data = []
@@ -123,12 +121,11 @@ def streaks(
     errors.validate_topx(topx, 20)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
 
         highest_streaks = records.highest_win_streaks(league, season, topx)
     io.table(
-        title=f"Highest Win Streaks in the {season} Premier League",
+        title=f"Top {topx} Highest Win Streaks in the {season} Premier League",
         headers=["Team", "Streak Length"],
         colors=["cyan", "magenta"],
         data=highest_streaks,
@@ -148,15 +145,18 @@ def comebacks(
         - team is a valid team
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
     """
-    best_comebacks = records.best_comebacks(league, season, topx)
-
     if season is None:
         errors.validate_topx(topx, 100)
-        title = "Most Clutch Teams in the Premier League"
+        title = f"Top {topx} Best Comebacks Teams in the Premier League"
     else:
         errors.validate_season(season)
         errors.validate_topx(topx, 20)
-        title = f"Most Clutch Teams in the {season} Premier League Season"
+        title = f"Top {topx} Best Comebacks Teams in the {season} Premier League Season"
+
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task("Compiling results...")
+
+        best_comebacks = records.best_comebacks(league, season, topx)
 
     io.table(
         title=title,
@@ -189,16 +189,15 @@ def goals(
         errors.validate_topx(topx, 100)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
 
         most_goals = records.most_goals_scored(league, season, topx)
         if season is None:
-            title = "Most Goals Scored in the Premier League"
+            title = f"Top {topx} Most Goals Scored Games in the Premier League"
         else:
-            title = f"Most Goals Scored in the {season} Premier League Season"
+            title = f"Top {topx} Most Goals Scored Games in the {season} Premier League Season"
     io.table(
-        title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=70
+        title=title, headers=["Team", "Most Goals In a Game"], colors=["cyan", "magenta"], data=most_goals, width=90
     )
 
 
@@ -223,15 +222,14 @@ def fairplay(
         errors.validate_topx(topx, 100)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
 
         most_fairplay = records.most_fairplay(league, season, topx)
 
         if season is None:
-            title = "Most Fairplay Teams in the Premier League"
+            title = f"Top {topx} Most Fairplay Teams in the Premier League"
         else:
-            title = f"Most fairplay teams in the {season} Premier League Season"
+            title = f"Top {topx} Most fairplay teams in the {season} Premier League Season"
 
     io.table(
         title=title,
@@ -256,11 +254,10 @@ def improvement(
     errors.validate_topx(topx, 20)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
 
         most_improved = records.most_improved_teams(league, season, topx)
-        title = f"Most Improved Teams in the {season} Premier League Season"
+        title = f"Top {topx} Most Improved Teams in the {season} Premier League Season"
 
     io.table(
         title=title,
@@ -288,14 +285,13 @@ def optimalfouls(
     errors.validate_topx(topx, 7)
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-        io.newline()
         progress.add_task("Compiling results...")
         optimal_fouls = optimization.calculate_optimal_fouls(league, team, topx)
 
         if team is None:
-            title = "Optimal Foul Ranges for all Premier League Teams"
+            title = f"Top {topx} Optimal Foul Ranges for all Premier League Teams"
         else:
-            title = f"Optimal Foul Ranges for {team}"
+            title = f"Top {topx} Optimal Foul Ranges for {team}"
     io.table(
         title=title,
         headers=["Foul Range", "Number of Wins Recorded", "Percent of Total Decade Wins"],
