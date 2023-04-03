@@ -123,12 +123,12 @@ def get_team_shot_accuracy(league: League, team_name: str, season: Optional[str]
         if season is not None and match.season != season:
             continue
         shots = match.details[team_name].shots
-        if shots==0:
+        if shots == 0:
             continue
         total_matches += 1
-        shots_target = match.details[team_name].shots_on_target     
-        accuracy += (shots_target/shots)
-        
+        shots_target = match.details[team_name].shots_on_target
+        accuracy += shots_target / shots
+
     return (accuracy / total_matches) * 100
 
 
@@ -242,7 +242,6 @@ def get_season_cards(league: League, season: str) -> float:
         team_cards.append(get_team_cards(league, name, season))
 
     return (sum(team_cards)) / len(team_cards)
-
 
 
 if __name__ == "__main__":
