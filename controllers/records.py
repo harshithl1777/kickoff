@@ -25,8 +25,6 @@ def most_goals_scored(league: League, season: Optional[str] = None, topx: int = 
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     matches = get_all_matches(league)
     goals = []
@@ -55,8 +53,6 @@ def most_fairplay(league: League, season: Optional[str] = None, topx: int = 4) -
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     matches = get_all_matches(league)
     team_offenses = {}
@@ -102,8 +98,6 @@ def highest_win_streaks(league: League, season: str, topx: int = 4) -> list[tupl
     Preconditions:
         - season is in the format '20XX-XX' between 2009-10 and 2018-19
         - topx > 0
-        - season is not None and topx <= 100
-        - season is None and topx <= 20
     """
     team_names = league.get_team_names(season)
     streaks = []
@@ -132,9 +126,8 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
     The most improved team is calculated based on a computation on the team's winrate throughout the season.
 
     Each tuple in the returned list will be of the form
-    (team name, worst winrate, final winrate, winrate improve)
-    where
-    team name is the name of the team,
+    (team name, worst winrate, final winrate, winrate improvement)
+    where team name is the name of the team,
     worst winrate is the lowest the team's winrate has been in the season*,
     final winrate is the winrate of the team at the end of the season,
     winrate improve is the difference between the final winrate and worst winrate
@@ -144,6 +137,9 @@ def most_improved_teams(league: League, season: str, top_x: int) -> list[tuple[s
 
     * worst winrate is calculated after ignoring the first 8 matches of the season.
     This is done because the teams winrate in the first few matches will be skewed.
+
+    Preconditions:
+        - 0 < topx <= 20
     """
     team_improvements = []
     team_names = league.get_team_names(season)
