@@ -45,10 +45,9 @@ def winrate(
 
     io.info(message=display_str, color="dodger_blue1")
 
+
 @app.command()
-def teamvsleague(
-    team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")
-) -> None:
+def teamvsleague(team: str = typer.Option(...), season: str = typer.Option(..., help="ex. 2009-10")) -> None:
     """Outputs various team statistics compared to the overall league statistics for the specified season.
 
     Preconditions:
@@ -57,11 +56,28 @@ def teamvsleague(
     errors.validate_team(league, team)
     errors.validate_season(season)
 
-    data = [("Average Goals Scored", round(basic.get_team_goals_scored(league, team, season), 2), round(basic.get_season_goals_scored(league, season), 2)),
-            ("Average Shot Accuracy (%)", round(basic.get_team_shot_accuracy(league, team, season), 2), round(basic.get_season_shot_accuracy(league, season), 2)),
-            ("Average Fouls Committed", round(basic.get_team_fouls(league, team, season), 2), round(basic.get_season_fouls(league, season), 2)),
-            ("Average Card Offenses", round(basic.get_team_cards(league, team, season), 2), round(basic.get_season_cards(league, season), 2)) 
-            ]
+    data = [
+        (
+            "Average Goals Scored",
+            round(basic.get_team_goals_scored(league, team, season), 2),
+            round(basic.get_season_goals_scored(league, season), 2),
+        ),
+        (
+            "Average Shot Accuracy (%)",
+            round(basic.get_team_shot_accuracy(league, team, season), 2),
+            round(basic.get_season_shot_accuracy(league, season), 2),
+        ),
+        (
+            "Average Fouls Committed",
+            round(basic.get_team_fouls(league, team, season), 2),
+            round(basic.get_season_fouls(league, season), 2),
+        ),
+        (
+            "Average Card Offenses",
+            round(basic.get_team_cards(league, team, season), 2),
+            round(basic.get_season_cards(league, season), 2),
+        ),
+    ]
 
     title = f"{team} Statistics Compared to the Rest of the League in the {season} Premier League Season"
     io.table(
@@ -94,6 +110,37 @@ def streaks(
         colors=["cyan", "magenta"],
         data=highest_streaks,
         width=70,
+    )
+
+
+@app.command()
+def comebacks(
+    season: str = typer.Option(default=None, help="ex. 2009-10"),
+    topx: int = typer.Option(default=4, help="Enter the top x values to output"),
+) -> None:
+    """Outputs the winrate statistic for the specified team & season.
+    If no arguments are found, the statistic will be calculated for all teams and seasons.
+
+    Preconditions
+        - team is a valid team
+        - season is in the format '20XX-XX' between 2009-10 and 2018-19
+    """
+    best_comebacks = records.best_comebacks(league, season, topx)
+
+    if season is None:
+        errors.validate_topx(topx, 100)
+        title = "Most Clutch Teams in the Premier League"
+    else:
+        errors.validate_season(season)
+        errors.validate_topx(topx, 20)
+        title = f"Most Clutch Teams in the {season} Premier League Season"
+
+    io.table(
+        title=title,
+        headers=["Team", "Half-Time Score", "Full-Time Score", "Comeback Size"],
+        colors=["cyan", "magenta", "yellow", "green"],
+        data=best_comebacks,
+        width=100,
     )
 
 
@@ -148,7 +195,7 @@ def improvement(
         headers=["Team", "Lowest Win (%)", "Final Winrate (%)", "Winrate Improvement (%)"],
         colors=["cyan", "magenta", "cyan", "magenta"],
         data=most_improved,
-        width=80
+        width=80,
     )
 
 
