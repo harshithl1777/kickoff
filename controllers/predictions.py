@@ -57,7 +57,7 @@ def _find_all_paths(home_team: Team, away_team: Team, season: str, depth: int) -
     visited: set[str] = set()  # set of all team names that have been visited
 
     def dfs(team: Team, path: list[Match], at_home: bool) -> None:
-        """team must not be in visited"""
+        """DFS helper for _find_all_paths"""
         if len(path) > depth:
             return
 
